@@ -1,0 +1,144 @@
+Calculating hallu subspace for: llama_model.model.layers.16.mlp.down_proj.weight
+Layer 16 - rank0: Unterscheidung | Hinweis | Begriffe | sierp | Einzeln | nobody | everybody | iellement | Bedeut | фев
+Layer 16 - rank1: oh | brázky | gepublic | rus | trakten | nearby | ult | eness | ℚ | vois
+Layer 16 - rank2: in | . | to | <0x0A> | of | I | … | ( | for | as
+Layer 16 - rank3: etc | Vern | бле | ever | tandis | etch | ipo | uck | hers | pod
+Layer 16 - rank4: till | uche | adas | beh | ;& | onda | vy | vas | obi | agas
+Layer 16 - rank5: ám | ones | Clo | :\ | ifer | fri | migr | whom | clo | bre
+Layer 16 - rank6: background | overall | image | ण | frame | ill | chev | Background | oby | composition
+Layer 16 - rank7: ‌ | nach | enia | <0xF3> | iszt | <0x1B> | 谷 | ounce | rapp | usammen
+Calculating hallu subspace for: llama_model.model.layers.17.mlp.down_proj.weight
+Layer 17 - rank0: Unterscheidung | Hinweis | Begriffe | Einzeln | Bedeut | sierp | nobody | everybody | iellement | ↵
+Layer 17 - rank1: mana | uv | andom | osten | observation | jd | Mys | тей | iewer | adrat
+Layer 17 - rank2: in | <0x0A> | to | … | . | I | of | ( | as | is
+Layer 17 - rank3: etc | near | Vern | directly | another | es | side | prob | mi | near
+Layer 17 - rank4: concentration | concentr | Because | iei | curl | ше | groups | others | because | GROUP
+Layer 17 - rank5: background | Background | background | Background | bg | behind | visible | фон | overall | eground
+Layer 17 - rank6: frame | oom | image | ➜ | text | ▸ | clo | ám | frame | Frame
+Layer 17 - rank7: ‌ | <0xF3> | nach | <0x0A> | . | Fue | sono | yaume | … | Licencia
+Calculating hallu subspace for: llama_model.model.layers.18.mlp.down_proj.weight
+Layer 18 - rank0: Unterscheidung | Hinweis | Begriffe | Bedeut | Einzeln | sierp | nobody | everybody | iellement | ↵
+Layer 18 - rank1: trakten | gepublic | ◄ | nearby | brázky | makeText | données | etc | bolds | ult
+Layer 18 - rank2: Suppose | till | useless | ="@+ | Assume | Longrightarrow | pointer | Finally | left | уда
+Layer 18 - rank3: etc | near | directly | another | right | Vern | side | left | third | gen
+Layer 18 - rank4: background | Background | Background | prev | background | uche | dé | itul | agas | prev
+Layer 18 - rank5: background | Background | Background | background | bg | ण | фон | behind | overall | <0x0A>
+Layer 18 - rank6: fotograf | centre | fur | ➜ | firm | clo | oom | ▸ | spectrum | werp
+Layer 18 - rank7: (! | (! | background | él | erman | AW | ár | inger | други | spect
+Calculating hallu subspace for: llama_model.model.layers.19.mlp.down_proj.weight
+Layer 19 - rank0: Unterscheidung | Hinweis | Begriffe | Bedeut | sierp | Einzeln | nobody | ↵ | everybody | iellement
+Layer 19 - rank1: trakten | nearby | gepublic | etc | données | rus | brázky | bolds | ◄ | temporary
+Layer 19 - rank2: till | arithmetic | useless | ="@+ | Assume | altra | Suppose | pointer | Longrightarrow | Finally
+Layer 19 - rank3: etc | another | cel | near | directly | third | essen | corresponding | end | top
+Layer 19 - rank4: ones | others | konn | in | <0x0A> | position | ै | Oficina | ़ | asi
+Layer 19 - rank5: background | Background | Background | background | overall | behind | context | bg | frame | details
+Layer 19 - rank6: beh | ▸ | ám | centre | fur | clo | ones | page | frame | forces
+Layer 19 - rank7: ‌ | <0x1B> | <0xF3> | ut | Licencia | nach | ∘ | bst | <0xCE> | Mathemat
+Calculating hallu subspace for: llama_model.model.layers.20.mlp.down_proj.weight
+Layer 20 - rank0: Unterscheidung | Hinweis | Begriffe | Bedeut | sierp | nobody | everybody | ↵ | Einzeln | iellement
+Layer 20 - rank1: nearby | rus | trakten | ult | pop | hours | temporary | etc | nap | rem
+Layer 20 - rank2: ="@+ | altra | left | arithmetic | Assume | Longrightarrow | ímp | near | till | pointer
+Layer 20 - rank3: capt | Kontrola | łów | scene | capt | Maler | candid | Leip | javase | scenario
+Layer 20 - rank4: background | Background | Background | background | ce | dé | wall | вид | presence | wall
+Layer 20 - rank5: background | <0x0A> | in | konn | frame | Background | ➜ | Zyg | ण | Background
+Layer 20 - rank6: centre | beh | front | middle | right | center | forces | cent | кро | tip
+Layer 20 - rank7: <0xF3> | Ξ | ut | bst | ‌ | rinn | … | <0x1B> | ∘ | INNER
+Calculating hallu subspace for: llama_model.model.layers.21.mlp.down_proj.weight
+Layer 21 - rank0: Unterscheidung | Begriffe | Hinweis | Bedeut | ↵ | sierp | everybody | nobody | Einzeln | его
+Layer 21 - rank1: nearby | rus | pop | temporary | cool | rem | trakten | ult | tempor | wel
+Layer 21 - rank2: in | . | to | of | ( | I | … | <0x0A> | … | as
+Layer 21 - rank3: bottom | top | left | near | another | convenient | cel | tri | next | altra
+Layer 21 - rank4: others | cell | Position | in | concentr | rez | ones | ै | position | groups
+Layer 21 - rank5: background | Background | Background | background | bottom | image | frame | overall | panel | composition
+Layer 21 - rank6: background | background | ben | Background | tables | Background | people | etc | various | overhead
+Layer 21 - rank7: ut | <0xF3> | table | Ξ | different | ℚ | daugh | bst | rinn | umerate
+Calculating hallu subspace for: llama_model.model.layers.22.mlp.down_proj.weight
+Layer 22 - rank0: Unterscheidung | Begriffe | Hinweis | Bedeut | sierp | ↵ | everybody | nobody | Einzeln | его
+Layer 22 - rank1: nearby | rus | cool | nap | wel | pop | temporary | rem | tempor | simplicity
+Layer 22 - rank2: in | . | ( | <0x0A> | … | of | to | I | … | for
+Layer 22 - rank3: capt | ше | Kontrola | capt | NL | ActivityThread | latex | captured | Picture | snapshot
+Layer 22 - rank4: background | bottom | image | left | Background | frame | center | Background | panel | top
+Layer 22 - rank5: ones | others | position | Position | in | ै | entferne | konn | cell | positions
+Layer 22 - rank6: background | Background | Background | background | behind | shadow | overhead | frame | trees | buildings
+Layer 22 - rank7: tables | table | background | Table | various | Tables | TABLE | scattered | widet | drink
+Calculating hallu subspace for: llama_model.model.layers.23.mlp.down_proj.weight
+Layer 23 - rank0: Unterscheidung | Hinweis | Begriffe | sierp | Bedeut | ↵ | everybody | nobody | Einzeln | его
+Layer 23 - rank1: nearby | nap | rus | cool | temporary | trakten | tempor | await | soft | simplicity
+Layer 23 - rank2: in | . | ( | of | <0x0A> | … | I | to | … | and
+Layer 23 - rank3: bottom | left | top | top | right | bott | next | olean | third | └
+Layer 23 - rank4: async | older | either | jor | augh | backwards | raph | ono | adjacent | orous
+Layer 23 - rank5: itul | prev | dé | uce | ando | ce | prev | ylvan | till | apat
+Layer 23 - rank6: background | Background | Background | background | frame | far | distance | behind | distant | shadow
+Layer 23 - rank7: beh | right | middle | far | droit | right | cent | centre | обра | till
+Calculating hallu subspace for: llama_model.model.layers.24.mlp.down_proj.weight
+Layer 24 - rank0: Unterscheidung | Begriffe | Hinweis | Bedeut | sierp | ↵ | everybody | nobody | Einzeln | paździer
+Layer 24 - rank1: quelle | стоя | appears | ▸ | modal | iewer | towards | тей | in | very
+Layer 24 - rank2: in | . | of | ( | <0x0A> | I | to | … | and | …
+Layer 24 - rank3: capt | capt | atmosphere | scene | captured | contrast | condu | scenes | capture | sep
+Layer 24 - rank4: avel | orous | async | gest | нин | dressed | aya | either | backwards | pta
+Layer 24 - rank5: prev | till | DOCTYPE | dé | itul | ylvan | alse | ando | uche | apat
+Layer 24 - rank6: ipage | ut | Stutt | Chine | sitt | INCT | trakten | rinn | <0xCE> | ieb
+Layer 24 - rank7: tables | table | Tables | widet | tables | setup | ben | containers | people | chair
+Calculating hallu subspace for: llama_model.model.layers.25.mlp.down_proj.weight
+Layer 25 - rank0: Unterscheidung | Begriffe | Hinweis | Bedeut | ↵ | sierp | everybody | nobody | Einzeln | его
+Layer 25 - rank1: in | стоя | appears | towards | quelle | modal | iewer | eval | ▸ | eft
+Layer 25 - rank2: in | . | ( | I | <0x0A> | of | to | … | … | and
+Layer 25 - rank3: next | next | altra | directly | right | top | tri | bott | sd | table
+Layer 25 - rank4: gest | dressed | jor | backwards | avel | older | inline | async | fica | convers
+Layer 25 - rank5: DOCTYPE | itul | ylvan | uce | till | reu | airo | suppose | prev | enix
+Layer 25 - rank6: ipage | Stutt | Chine | ث | bott | sols | trakten | Ė | rinn | ut
+Layer 25 - rank7: right | far | middle | beh | mid | right | bie | droit | till | head
+Calculating hallu subspace for: llama_model.model.layers.26.mlp.down_proj.weight
+Layer 26 - rank0: Unterscheidung | Begriffe | Hinweis | sierp | Bedeut | ↵ | nobody | everybody | paździer | Einzeln
+Layer 26 - rank1: in | towards | … | very | стоя | ▸ | quelle | of | modal | some
+Layer 26 - rank2: in | . | I | ( | <0x0A> | and | of | to | , | for
+Layer 26 - rank3: next | next | right | directly | altra | top | left | left | near | another
+Layer 26 - rank4: image | in | background | right | <0x0A> | bottom | far | frame | left | the
+Layer 26 - rank5: others | spect | gest | groups | 才 | données | graf | fashion | entferne | cell
+Layer 26 - rank6: ipage | ut | rinn | sols | bott | Chine | ث | Stutt | <0xF3> | Ė
+Layer 26 - rank7: right | far | middle | beh | right | mid | droit | head | Right | ocs
+Calculating hallu subspace for: llama_model.model.layers.27.mlp.down_proj.weight
+Layer 27 - rank0: Unterscheidung | Begriffe | Hinweis | Bedeut | sierp | ↵ | nobody | фев | everybody | Einzeln
+Layer 27 - rank1: in | towards | of | … | some | стоя | very | with | at | Ÿ
+Layer 27 - rank2: in | . | I | ( | and | <0x0A> | of | for | , | to
+Layer 27 - rank3: capt | capt | condu | surrounding | atmosphere | шу | busy | ActivityThread | scenes | pixel
+Layer 27 - rank4: background | image | frame | <0x0A> | right | picture | bottom | panel | in | ➖
+Layer 27 - rank5: others | their | 才 | ै | entferne | bec | onnen | in | cell | because
+Layer 27 - rank6: background | Background | Background | background | frame | median | reet | street | trees | scene
+Layer 27 - rank7: right | middle | far | head | beh | right | Right | droit | mid | till
+Calculating hallu subspace for: llama_model.model.layers.28.mlp.down_proj.weight
+Layer 28 - rank0: in | on | . | , | various | near | visible | Љ | at | to
+Layer 28 - rank1: nearby | nap | cool | rus | gle | await | inv | soft | await | soft
+Layer 28 - rank2: in | . | I | E | M | of | ( | and | <0x0A> | …
+Layer 28 - rank3: next | next | right | directly | top | near | altra | Dispatcher | hner | against
+Layer 28 - rank4: image | background | <0x0A> | the | in | frame | bottom | far | right | of
+Layer 28 - rank5: others | their | bec | wait | waiting | données | brázky | they | 才 | onnen
+Layer 28 - rank6: background | Background | Background | background | frame | median | scene | frame | cluster | reet
+Layer 28 - rank7: right | middle | head | Right | nose | beh | far | préc | mid | ocs
+Calculating hallu subspace for: llama_model.model.layers.29.mlp.down_proj.weight
+Layer 29 - rank0: in | . | on | , | to | at | and | near | Љ | side
+Layer 29 - rank1: towards | in | стоя | atform | ências | Ÿ | <s> | ències | onen | talking
+Layer 29 - rank2: in | . | I | M | E | <0x0A> | … | , | and | …
+Layer 29 - rank3: capt | eng | atmosphere | surrounding | capt | scenes | scene | Eng | busy | captured
+Layer 29 - rank4: image | <0x0A> | the | in | for | frame | background | right | to | of
+Layer 29 - rank5: their | others | head | brázky | gest | bec | they | w | waiting | wait
+Layer 29 - rank6: background | frame | Background | Background | median | frame | background | scene | street | far
+Layer 29 - rank7: tables | table | various | setting | setup | Setup | ben | objects | ependant | sparse
+Calculating hallu subspace for: llama_model.model.layers.30.mlp.down_proj.weight
+Layer 30 - rank0: in | on | , | . | at | near | the | to | while | directly
+Layer 30 - rank1: <s> | ▸ | atform | onen | … | listade | imore | Ÿ | ople | uld
+Layer 30 - rank2: straightforward | fewer | enorm | : | kinds | till | close | anybody | stuff | toward
+Layer 30 - rank3: capt | atmosphere | eng | dressed | foc | capt | capture | scenes | captured | dynamic
+Layer 30 - rank4: avel | ield | dressed | ,” | WF | mys | .“ | idget | acing | ux
+Layer 30 - rank5: their | head | brázky | to | waiting | who | others | they | just | we
+Layer 30 - rank6: ut | different | laid | glass | places | place | cool | cu | cold | lay
+Layer 30 - rank7: several | tables | many | ependant | various | ben | likely | people | objects | additional
+Calculating hallu subspace for: llama_model.model.layers.31.mlp.down_proj.weight
+Layer 31 - rank0: near | standing | visible | facing | partially | proxim | closer | nearby | position | prominent
+Layer 31 - rank1:  | There | : | Some | About | are | In | There | about | The
+Layer 31 - rank2: </s> | aje | Read | avi | iet | os | avas | textt | odo | <s>
+Layer 31 - rank3: left | next | bottom | opposite | stack | nearest | near | top | right | bott
+Layer 31 - rank4: scen | atmosphere | contrast | background | color | composition | landscape | scene | context | atmos
+Layer 31 - rank5: dressed | scattered | drink | holding | sitting | watching | nearby | enjo | carrying | walking
+Layer 31 - rank6: sitt | aliment | plates | arrays | containers | consumption | arranged | sorted | utiliz | arr
+Layer 31 - rank7: delight | splendid | ― | magnific | midst | eleg | amid | préc | grace | tête

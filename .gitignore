@@ -1,0 +1,9 @@
+data/coco2014
+eval/chair
+eval/pope
+eval/opope
+llava/llava-v1.5-7b
+minigpt4/Llama-2-7b-chat-hf
+output/
+minigpt4/pretrained_minigpt4_llama2_7b.pth
+pattern/

@@ -1,0 +1,5 @@
+CUDA_VISIBLE_DEVICES=7 python scripts/model_run.py --model_name MiniGPT4 --model_path minigpt4/Llama-2-7b-chat-hf
+CUDA_VISIBLE_DEVICES=7 python scripts/model_edit.py --model_name MiniGPT4 --model_path minigpt4/Llama-2-7b-chat-hf --emb_path output/MiniGPT4/lure_train_42_activations.pkl --top_k_ranks 8 --lowest_layer 16 --highest_layer 32
+CUDA_VISIBLE_DEVICES=6 python scripts/model_response.py  --dataset chair --model_name MiniGPT4 --model_path output/edited_model/MiniGPT4-top8-16-32-test --num_samples 500 --num_beams 3 --max_length 64 --seed 42
+CUDA_VISIBLE_DEVICES=6 python scripts/model_response.py  --dataset pope --model_name MiniGPT4 --model_path output/edited_model/MiniGPT4-top8-16-32-test --num_samples 500 --num_beams 3 --max_length 64 --seed 42
+CUDA_VISIBLE_DEVICES=6 python scripts/model_response.py  --dataset opope --model_name MiniGPT4 --model_path output/edited_model/MiniGPT4-top8-16-32-test --num_samples 500 --num_beams 3 --max_length 256 --seed 42

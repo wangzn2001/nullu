@@ -1,0 +1,5 @@
+CUDA_VISIBLE_DEVICES=7 python scripts/model_run.py --model_name mPLUG_Owl2 --model_path mplug_owl2/mplug-owl2-llama2-7b
+CUDA_VISIBLE_DEVICES=7 python scripts/model_edit.py --model_name mPLUG_Owl2 --model_path mplug_owl2/mplug-owl2-llama2-7b --emb_path output/mPLUG_Owl2/lure_train_42_activations.pkl --top_k_ranks 4 --lowest_layer 16 --highest_layer 32
+CUDA_VISIBLE_DEVICES=7 python scripts/model_response.py --model_name mPLUG_Owl2 --model_path mplug_owl2/mplug-owl2-llama2-7b --dataset chair --num_samples 500 --num_beams 1 --max_length 64 --top_k 32
+CUDA_VISIBLE_DEVICES=7 python scripts/model_response.py --model_name mPLUG_Owl2 --model_path mplug_owl2/mplug-owl2-llama2-7b --dataset pope --num_samples 500 --num_beams 1 --max_length 64 --top_k 16
+CUDA_VISIBLE_DEVICES=7 python scripts/model_response.py --model_name mPLUG_Owl2 --model_path mplug_owl2/mplug-owl2-llama2-7b --dataset opope --num_samples 500 --num_beams 1 --max_length 256

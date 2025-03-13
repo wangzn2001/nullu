@@ -1,0 +1,80 @@
+Calculating hallu subspace for: model.layers.16.mlp.down_proj.weight
+Layer 16 - rank0: cca | recher | proof | ought | press | everybody | Zero | sprech | silence | vek
+Layer 16 - rank1: eness | brázky | vt | pau | ◄ | моря | optional | $}}% | bay | ategory
+Layer 16 - rank2: нин | rende | PRIMARY | hing | candid | ể | forge | dynamic | either | different
+Layer 16 - rank3: ones | quelle | 達 | whom | ズ | cluster | Pero | Group | middle | classes
+Calculating hallu subspace for: model.layers.17.mlp.down_proj.weight
+Layer 17 - rank0: LENG | izont | osten | notable | Љ | FilterChain | hely | ynie | wiąz | ь
+Layer 17 - rank1: ◄ | $}}% | vt | brázky | eness | ientos | nearby | pau | silent | bay
+Layer 17 - rank2: another | third | another | Another | left | left | Object | Object | Obj | later
+Layer 17 - rank3: background | cape | Background | overhead | Background | dé | setup | militar | setting | settings
+Calculating hallu subspace for: model.layers.18.mlp.down_proj.weight
+Layer 18 - rank0: izont | FilterChain | notable | osten | LENG | ynie | wiąz | hely | URL | ь
+Layer 18 - rank1: nearby | brázky | vt | eness | 添 | ambiguation | nécessaire | optional | ◄ | ategory
+Layer 18 - rank2: нин | either | dynamic | № | forge | paces | folgender | rende | PRIMARY | candid
+Layer 18 - rank3: background | cape | Background | dé | settings | overhead | militar | setting | settings | environment
+Calculating hallu subspace for: model.layers.19.mlp.down_proj.weight
+Layer 19 - rank0: notable | izont | FilterChain | Zür | LENG | wiąz | ynie | URL | bras | osten
+Layer 19 - rank1: nearby | 添 | ambiguation | necess | necessary | brázky | nécessaire | ikel | eness | ategory
+Layer 19 - rank2: another | another | Another | third | otro | altra | latter | left | left | Object
+Layer 19 - rank3: others | 们 | leurs | themselves | 手 | ones | GROUP | те | Position | ause
+Calculating hallu subspace for: model.layers.20.mlp.down_proj.weight
+Layer 20 - rank0: izont | FilterChain | notable | Zür | various | LENG | ynie | wiąz | URL | left
+Layer 20 - rank1: nearby | 添 | necessary | quel | nécessaire | necess | ambiguation | ientos | otherwise | conqu
+Layer 20 - rank2: another | left | another | left | third | bottom | altra | Another | right | top
+Layer 20 - rank3: background | frame | center | overall | middle | Background | above | image | panel | scene
+Calculating hallu subspace for: model.layers.21.mlp.down_proj.weight
+Layer 21 - rank0: ought | ago | etc | everybody | edo | носи | vek | Zero | cca | inas
+Layer 21 - rank1: middle | ▸ | hor | middle | concentr | : | idget | olk | group | abord
+Layer 21 - rank2: another | left | bottom | another | Another | left | top | altra | third | right
+Layer 21 - rank3: background | frame | overall | center | above | image | panel | middle | Background | Background
+Calculating hallu subspace for: model.layers.22.mlp.down_proj.weight
+Layer 22 - rank0: izont | left | Zür | notable | various | FilterChain | position | kaf | positions | hely
+Layer 22 - rank1: nearby | 添 | wel | adds | necessary | nécessaire | quel | thrown | necess | ut
+Layer 22 - rank2: 活 | either | dynamic | yards | engaged | around | diverse | forge | busy | CTYPE
+Layer 22 - rank3: background | frame | overall | ill | scene | center | above | <0x0A> | image | effect
+Calculating hallu subspace for: model.layers.23.mlp.down_proj.weight
+Layer 23 - rank0: izont | notable | Zür | left | various | position | FilterChain | LENG | hely | positions
+Layer 23 - rank1: middle | : | middle | onen | hor | whom | :( | ▸ | abord | concentr
+Layer 23 - rank2: left | another | bottom | left | right | top | top | third | another | 左
+Layer 23 - rank3: background | ill | frame | above | center | of | <0x0A> | scene | overall | .
+Calculating hallu subspace for: model.layers.24.mlp.down_proj.weight
+Layer 24 - rank0: position | notable | various | izont | FilterChain | Zür | prominent | positions | left | towards
+Layer 24 - rank1: middle | middle | onen | tenia | apolis | hor | :( | <s> | : | towards
+Layer 24 - rank2: 活 | either | mill | yards | adem | engaged | CTYPE | нин | dynamic | diverse
+Layer 24 - rank3: background | ill | scene | frame | overall | above | of | amb | <0x0A> | environment
+Calculating hallu subspace for: model.layers.25.mlp.down_proj.weight
+Layer 25 - rank0: position | notable | positions | various | FilterChain | prominent | in | Zür | towards | left
+Layer 25 - rank1: 添 | nearby | adds | ut | adding | wel | refresh | added | comple | soft
+Layer 25 - rank2: right | another | bottom | top | left | top | left | third | table | right
+Layer 25 - rank3: background | ill | frame | scene | overall | en | amb | above | v | panel
+Calculating hallu subspace for: model.layers.26.mlp.down_proj.weight
+Layer 26 - rank0: in | position | various | , | notable | towards | positions | closer | left | prominent
+Layer 26 - rank1: middle | <s> | middle | towards | apolis | onen | tenia | :( |  | whom
+Layer 26 - rank2: 活 | mill | engaged | dynamic | 仁 | either | activity | CTYPE | diverse | adem
+Layer 26 - rank3: background | frame | ill | scene | overall | panel | en | of | above | center
+Calculating hallu subspace for: model.layers.27.mlp.down_proj.weight
+Layer 27 - rank0: in | position | towards | , | various | closer | on | the | a | positions
+Layer 27 - rank1: towards | <s> | middle | apolis | onen | :( | middle | tenia | abord | whom
+Layer 27 - rank2: right | another | right | left | towards | left | 右 | top | bottom | top
+Layer 27 - rank3: flask | scattered | 手 | tong | bott | Position | avel | adors | 持 | ables
+Calculating hallu subspace for: model.layers.28.mlp.down_proj.weight
+Layer 28 - rank0: in | the | , | a | position | on | closer | towards | various | to
+Layer 28 - rank1: <s> | apolis | towards | :( | middle | onen | whom | itä | groupe | tenia
+Layer 28 - rank2: engaged | 活 | mill | themselves | eng | dynamic | Eng | diverse | activity | busy
+Layer 28 - rank3: background | frame | scene | ill | overall | en | amb | of | above | image
+Calculating hallu subspace for: model.layers.29.mlp.down_proj.weight
+Layer 29 - rank0: in | , | a | the | position | closer | on | towards | and | to
+Layer 29 - rank1: <s> | apolis | towards | :( | ôt | middle | itä | middle | concentr | onen
+Layer 29 - rank2: engaged | eng | 活 | mill | Eng | themselves | dynamic | diverse | Eng | activity
+Layer 29 - rank3: frame | background | scene | ill | frame | image | en | Frame | panel | nature
+Calculating hallu subspace for: model.layers.30.mlp.down_proj.weight
+Layer 30 - rank0: in | , | the | a | at | and | on | closer | both | .
+Layer 30 - rank1: nearby | adds | comple | inv | added | 添 | refresh | wel | soft | adding
+Layer 30 - rank2: engaged | eng | themselves | mill | 活 | Eng | diverse | either | various | social
+Layer 30 - rank3: scattered | flask | placed | 手 | nearby | Position | bott | adors | tong | Position
+Calculating hallu subspace for: model.layers.31.mlp.down_proj.weight
+Layer 31 - rank0: silence | black | Answer | white | wrote | answers | html | now | rewrite | doesnt
+Layer 31 - rank1: <0x0A> | middle | right | towards | with | front | : | toward | facing | .
+Layer 31 - rank2: engaged | <0x0A> | Eng | group | interact | groups | eng | diverse | individuals | Eng
+Layer 31 - rank3: frame | diagonal | Background | horizon | scene | center | background | vertical | Frame | frame
