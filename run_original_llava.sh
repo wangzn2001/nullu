@@ -1,3 +1,3 @@
-CUDA_VISIBLE_DEVICES=2 python scripts/model_response.py --model_name LLaVA-7B --model_path llava/llava-v1.5-7b --dataset chair --num_samples 500 --num_beams 1 --max_length 64 --seed 42
-CUDA_VISIBLE_DEVICES=2 python scripts/model_response.py --model_name LLaVA-7B --model_path llava/llava-v1.5-7b --dataset pope --num_samples 500 --num_beams 1 --max_length 64 --seed 42 
-CUDA_VISIBLE_DEVICES=2 python scripts/model_response.py --model_name LLaVA-7B --model_path llava/llava-v1.5-7b --dataset opope --num_samples 500 --num_beams 1 --max_length 256 --seed 42
+CUDA_VISIBLE_DEVICES=7 python scripts/model_response.py --model_name LLaVA-7B --model_path llava/llava-v1.5-7b --dataset chair --num_samples 500 --num_beams 1 --max_length 64 --seed 42
+CUDA_VISIBLE_DEVICES=7 python scripts/model_response.py --model_name LLaVA-7B --model_path llava/llava-v1.5-7b --dataset pope --num_samples 500 --num_beams 1 --max_length 64 --seed 42 
+CUDA_VISIBLE_DEVICES=7 python scripts/model_response.py --model_name LLaVA-7B --model_path llava/llava-v1.5-7b --dataset opope --num_samples 500 --num_beams 1 --max_length 256 --seed 42
