@@ -229,7 +229,7 @@ class HalluEdit():
                 sorted_tokens = self.project_into_vocabluary(singular_vector.squeeze(), self.E.cpu(), self.tokenizer, top_k=10)
                 self.f.write(f'Layer {layer_num} - rank{r}: {" | ".join([x for x in sorted_tokens])}\n')
 
-            hallu_subspace[key] = {"p_hallu": p_hallu, 'v': svd[key]['v']}
+            hallu_subspace[key] = p_hallu
         # singular_tensor = torch.stack([sv.clone().detach() for sv in singular_list]) 
         # torch.save(singular_tensor, 'singular_lure_layers16-32.pkl') 
         logging.info('Hallu subspace calculated.')
@@ -250,9 +250,9 @@ class HalluEdit():
                 layer_num = int(key.split('.')[self.lm_sep_idx])
                 if layer_num in layer_range:
                     logging.info(f'Editing: {key}')
-                    logging.info(f'Module {key}: P_hallu mean: {hallu_subspace[key]['p_hallu'].mean()}.')
+                    logging.info(f'Module {key}: P_hallu mean: {hallu_subspace[key].mean()}.')
 
-                    P_filter = torch.eye(self.D) - hallu_subspace[key]['p_hallu']
+                    P_filter = torch.eye(self.D) - hallu_subspace[key]
                     if self.model.args.model_name == 'MiniGPT4':
                         P_filter = P_filter.to(edited_state_dict[key].device).to(self.model.model.llama_model.dtype)
                     else:
