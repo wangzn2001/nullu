@@ -295,22 +295,25 @@ class HalluEdit():
                     
                     hallu_filter = torch.eye(self.D) - hallu_subspace[key]
                     truth_filter = truth_subspace[key]
-                    P_filter = hallu_filter @ truth_filter
+                    P_filter_left = hallu_filter @ truth_filter
+                    P_filter_right = truth_filter @ hallu_filter
                     if self.model.args.model_name == 'MiniGPT4':
-                        P_filter = P_filter.to(edited_state_dict[key].device).to(self.model.model.llama_model.dtype)
+                        P_filter_left = P_filter_left.to(edited_state_dict[key].device).to(self.model.model.llama_model.dtype)
+                        P_filter_right = P_filter_right.to(edited_state_dict[key].device).to(self.model.model.llama_model.dtype)
                     else:
-                        P_filter = P_filter.to(edited_state_dict[key].device).to(self.model.model.dtype)
+                        P_filter_left = P_filter_left.to(edited_state_dict[key].device).to(self.model.model.dtype)
+                        P_filter_right = P_filter_right.to(edited_state_dict[key].device).to(self.model.model.dtype)
 
                     weight = edited_state_dict[key]
                     weight = weight.T
 
                     if edit_keys and 'up_proj' in key:
-                        modified_weight = P_filter @ weight  # (D, D) @ (D, 4D) -> (D, 4D)
+                        modified_weight = P_filter_left @ weight  # (D, D) @ (D, 4D) -> (D, 4D)
                     elif edit_values and 'down_proj' in key:
-                        modified_weight = weight @ P_filter  # (4D, D) @ (D, D) -> (4D, D)
+                        modified_weight = weight @ P_filter_right  # (4D, D) @ (D, D) -> (4D, D)
                     elif 'c_proj' in key: # Qwen_VL_Chat
                         print('c_proj')
-                        modified_weight = weight @ P_filter
+                        modified_weight = weight @ P_filter_right
                     else:
                         print('no modified_weight')
                         continue

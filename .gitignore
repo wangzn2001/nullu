@@ -7,3 +7,4 @@ minigpt4/Llama-2-7b-chat-hf
 output/
 minigpt4/pretrained_minigpt4_llama2_7b.pth
 pattern/
+*.txt
