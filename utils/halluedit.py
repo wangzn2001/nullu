@@ -111,6 +111,7 @@ class HalluEdit():
         preferred_sent_embs = self._get_hidden_sentence_embeddings(neg_data) if isinstance(neg_data, list) else neg_data.permute(1, 0, 2)  # (L, N, D)
 
         difference_matrix = (preferred_sent_embs - non_preferred_sent_embs) / 2  # (L, N, D)
+        truth_matrix = preferred_sent_embs / 2
 
         logging.info('Difference matrix calculated.')
         del non_preferred_sent_embs
@@ -134,14 +135,14 @@ class HalluEdit():
                 d = d @ (I - self.alpha * P)  # (N, D) @ (D, D) -> (N, D) alpha
                 difference_matrix[layer_num] = d.to(difference_matrix[layer_num].dtype) # d
 
-        return difference_matrix
+        return difference_matrix, truth_matrix
 
 
     def get_ats(self, pos_data, neg_data):
 
-        difference_matrix = self._get_difference_matrix(pos_data, neg_data)  # (L, N, D)
+        difference_matrix, truth_matrix = self._get_difference_matrix(pos_data, neg_data)  # (L, N, D)
         ats = {}
-
+        ats_truth = {}
         for key in self.model.model.state_dict():
             if self.model.args.model_name == 'MiniGPT4':
                # 'llama_model.model.layers.2.mlp.down_proj.weight_format'
@@ -155,6 +156,7 @@ class HalluEdit():
                 ):
                     layer_num = int(key.split('.')[self.lm_sep_idx])  
                     ats[key] = difference_matrix[layer_num]
+                    ats_truth[key] = truth_matrix[layer_num]
             elif self.model.args.model_name == 'Qwen_VL_Chat':
                 if (
                     'mlp.c_proj.weight' in key 
@@ -162,6 +164,7 @@ class HalluEdit():
                 ):
                     layer_num = int(key.split('.')[self.lm_sep_idx])  
                     ats[key] = difference_matrix[layer_num]
+                    ats_truth[key] = truth_matrix[layer_num]
             elif self.model.args.model_name == 'mPLUG_Owl2':
                 if (
                     'weight' in key 
@@ -173,6 +176,7 @@ class HalluEdit():
                 ):
                     layer_num = int(key.split('.')[self.lm_sep_idx])  
                     ats[key] = difference_matrix[layer_num]
+                    ats_truth[key] = truth_matrix[layer_num]
             else:
                 if (
                     'weight' in key 
@@ -183,10 +187,11 @@ class HalluEdit():
                 ):
                     layer_num = int(key.split('.')[self.lm_sep_idx])  # Format: 'language_model.model.layers.0.mlp.gate_proj.weight'
                     ats[key] = difference_matrix[layer_num]
-        return ats
+                    ats_truth[key] = truth_matrix[layer_num]
+        return ats, ats_truth
     
     
-    def svd_on_ats(self, ats):
+    def svd_on_ats(self, ats, ats_truth):
         '''
         Key(D, 4D) -> U(D, D) S(D) V^T(D, 4D)
         Value(4D, D) -> U(4D, D) S(4D) V^T(D, D)
@@ -201,10 +206,18 @@ class HalluEdit():
             u, s, vt = torch.linalg.svd(M.cuda(), full_matrices=False)  # Skinny SVD, vt is V^T
             svd[key] = {'u': u.cpu(), 's': s.cpu(), 'v': vt.T.cpu()}
         logging.info('SVD of ATS calculated.')
-        return svd
+
+        svd_truth = {} 
+        for key in ats_truth:
+            logging.debug(f'Calculating SVD for truth: {key}')
+            M = ats_truth[key].to(torch.float32)  # SVD function only works with float32
+            u, s, vt = torch.linalg.svd(M.cuda(), full_matrices=False)  # Skinny SVD, vt is V^T
+            svd_truth[key] = {'u': u.cpu(), 's': s.cpu(), 'v': vt.T.cpu()}
+        logging.info('SVD of ATS truth calculated.')
+        return svd, svd_truth
 
 
-    def find_p_hallu(self, svd, rank_range=20):
+    def find_p_hallu(self, svd, svd_truth, rank_range=20):
         hallu_subspace = {}
 
         # singular_list = []
@@ -233,10 +246,38 @@ class HalluEdit():
         # singular_tensor = torch.stack([sv.clone().detach() for sv in singular_list]) 
         # torch.save(singular_tensor, 'singular_lure_layers16-32.pkl') 
         logging.info('Hallu subspace calculated.')
-        return hallu_subspace
+
+        truth_subspace = {}
+
+        for key in svd_truth.keys():
+            layer_num = int(key.split('.')[self.lm_sep_idx])  # Format: 'language_model.model.layers.0.mlp.up_proj.weight'
+            if layer_num not in self.edit_layer_range:
+                logging.info(f'Skipping layer {layer_num}')
+                continue
+            self.f.write(f'Calculating truth subspace for: {key}\n')
+            logging.info(f'Calculating truth subspace for: {key}')
+
+            singular_vectors = svd_truth[key]['v']  # (D, N): N cols of (D,) vectors
+            # singular_list.append(singular_vectors) 
+            truth_rank_list = np.arange(self.top_k_ranks)  # [0, 1] by default
+
+            # Sum outer products of shortlisted ranks
+            p_truth = torch.zeros(self.D, self.D)
+            for r in truth_rank_list:
+                singular_vector = singular_vectors[:, r].unsqueeze(dim=1)  # (D, 1)
+                p_truth += singular_vector @ singular_vector.T  # (D, 1) @ (1, D) -> (D, D)
+
+                sorted_tokens = self.project_into_vocabluary(singular_vector.squeeze(), self.E.cpu(), self.tokenizer, top_k=10)
+                self.f.write(f'Layer {layer_num} - rank{r}: {" | ".join([x for x in sorted_tokens])}\n')
+
+            truth_subspace[key] = p_truth
+        # singular_tensor = torch.stack([sv.clone().detach() for sv in singular_list]) 
+        # torch.save(singular_tensor, 'singular_lure_layers16-32.pkl') 
+        logging.info('Truth subspace calculated.')
+        return hallu_subspace, truth_subspace
 
 
-    def edit_model(self, hallu_subspace, edit_keys=True, edit_values=True, layer_range=None):
+    def edit_model(self, hallu_subspace, truth_subspace, edit_keys=True, edit_values=True, layer_range=None):
         assert edit_keys or edit_values, 'At least one of edit_keys or edit_values should be True'
         logging.info(f'Editing keys: {edit_keys}, Editing values: {edit_values}.')
 
@@ -246,13 +287,15 @@ class HalluEdit():
 
         edited_state_dict = self.model.model.state_dict()
         for key in edited_state_dict:
-            if key in hallu_subspace:
+            if key in hallu_subspace and key in truth_subspace:
                 layer_num = int(key.split('.')[self.lm_sep_idx])
                 if layer_num in layer_range:
                     logging.info(f'Editing: {key}')
                     logging.info(f'Module {key}: P_hallu mean: {hallu_subspace[key].mean()}.')
-
-                    P_filter = torch.eye(self.D) - hallu_subspace[key]
+                    
+                    hallu_filter = torch.eye(self.D) - hallu_subspace[key]
+                    truth_filter = truth_subspace[key]
+                    P_filter = hallu_filter @ truth_filter
                     if self.model.args.model_name == 'MiniGPT4':
                         P_filter = P_filter.to(edited_state_dict[key].device).to(self.model.model.llama_model.dtype)
                     else:
@@ -286,11 +329,13 @@ class HalluEdit():
 
 
     def setup_for_edits(self, pos_data, neg_data):
-        ats = self.get_ats(pos_data, neg_data)
-        svd = self.svd_on_ats(ats)
+        ats, ats_truth = self.get_ats(pos_data, neg_data)
+        svd, svd_truth = self.svd_on_ats(ats, ats_truth)
         del ats
-        self.hallu_subspace = self.find_p_hallu(svd)
+        del ats_truth
+        self.hallu_subspace, self.truth_subspace = self.find_p_hallu(svd, svd_truth)
         del svd
+        del svd_truth
         torch.cuda.empty_cache()
 
 
@@ -310,7 +355,7 @@ class HalluEdit():
         self.setup_for_edits(pos_data, neg_data)
 
         # Apply edit
-        edited_model = self.edit_model(self.hallu_subspace, edit_keys, edit_values, layer_range)
+        edited_model = self.edit_model(self.hallu_subspace, self.truth_subspace, edit_keys, edit_values, layer_range)
         torch.cuda.empty_cache()
 
         # end_time = time.time()
