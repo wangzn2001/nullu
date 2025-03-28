@@ -78,83 +78,100 @@ Layer 31 - rank0: silence | black | Answer | white | wrote | answers | html | no
 Layer 31 - rank1: <0x0A> | middle | right | towards | with | front | : | toward | facing | .
 Layer 31 - rank2: engaged | <0x0A> | Eng | group | interact | groups | eng | diverse | individuals | Eng
 Layer 31 - rank3: frame | diagonal | Background | horizon | scene | center | background | vertical | Frame | frame
-Calculating truth subspace for: model.layers.16.mlp.down_proj.weight
-Layer 16 - rank0: . | and | ⁻ | , | Hinweis | in | <0x0A> | ( | on | références
-Layer 16 - rank1: umerate | Bedeut | iali | Bahn | uce | Agr | auc | mq | anton | oku
-Layer 16 - rank2: StackTrace | table | served | prue | kal | table | chef | ecz | 위 | predicate
-Layer 16 - rank3: >\< | street | hum | chod | dump | Aires | пли | along | autom | ǐ
-Calculating truth subspace for: model.layers.17.mlp.down_proj.weight
-Layer 17 - rank0: and | . | , | in | ⁻ | <0x0A> | ( | on | Hinweis | ˇ
-Layer 17 - rank1: grounds | sk | alg | field | pav | decid | cru | fields | resp | acre
-Layer 17 - rank2: served | StackTrace | table | placed | kal | table | prepared | gior | phal | chef
-Layer 17 - rank3: ono | 服 | swe | uniform | club | innen | wz | spect | buttons | hair
-Calculating truth subspace for: model.layers.18.mlp.down_proj.weight
-Layer 18 - rank0: . | and | in | , | ( | <0x0A> | on | to | - | today
-Layer 18 - rank1: sk | grounds | pav | alg | decid | dirig | trees | field | plane | tra
-Layer 18 - rank2: StackTrace | served | table | DEX | essel | bru | zb | table | gior | mine
-Layer 18 - rank3: ono | uniform | oment | води | spect | swe | Face | innen | sport | ball
-Calculating truth subspace for: model.layers.19.mlp.down_proj.weight
-Layer 19 - rank0: . | and | in | <0x0A> | ( | , | to | on | … | today
-Layer 19 - rank1: table | anton | Référence | auc | table | TABLE | becom | tables | Raum | 房
-Layer 19 - rank2: StackTrace | served | cca | 介 | table | teger | wohl | 위 | mine | bru
-Layer 19 - rank3: street | ped | Ped | itself | quiet | Sammlung | streets | dump | along | cond
-Calculating truth subspace for: model.layers.20.mlp.down_proj.weight
-Layer 20 - rank0: . | in | and | <0x0A> | ( | , | to | on | for | today
-Layer 20 - rank1: pav | park | tail | street | grounds | streets | trees | buildings | grass | dirig
-Layer 20 - rank2: fields | zb | served | поле | shall | remote | 球 | <0xC8> | fields | StackTrace
-Layer 20 - rank3: 球 | baseball | hair | player | sport | spect | uniform | seats | ball | Face
-Calculating truth subspace for: model.layers.21.mlp.down_proj.weight
-Layer 21 - rank0: . | in | and | <0x0A> | ( | , | to | on | for | today
-Layer 21 - rank1: park | pav | trees | trees | tail | tree | street | streets | grass | buildings
-Layer 21 - rank2: fields | поле | 球 | field | fields | ball | served | Field | pitch | <0xC8>
-Layer 21 - rank3: veget | cond | cook | car | stack | handled | serv | quiet | Cook | lon
-Calculating truth subspace for: model.layers.22.mlp.down_proj.weight
-Layer 22 - rank0: . | in | <0x0A> | ( | and | , | to | on | for | today
-Layer 22 - rank1: table | table | cabinet | tables | Table | TABLE | counter | kitchen | itchen | cook
-Layer 22 - rank2: fields | field | поле | ball | 球 | fields | grounds | game | Field | Field
-Layer 22 - rank3: player | baseball | uniform | spect | vest | players | 球 | suit | seats | hair
-Calculating truth subspace for: model.layers.23.mlp.down_proj.weight
-Layer 23 - rank0: in | . | and | <0x0A> | ( | , | to | on | for | today
-Layer 23 - rank1: pav | street | park | buildings | tail | streets | trees | grass | sk | trees
-Layer 23 - rank2: ball | fields | поле | 球 | field | pitch | grounds | Field | Field | <0xC8>
-Layer 23 - rank3: player | uniform | baseball | players | spect | vest | suit | sport | backwards | Player
-Calculating truth subspace for: model.layers.24.mlp.down_proj.weight
-Layer 24 - rank0: in | . | <0x0A> | ( | and | , | to | on | for | …
-Layer 24 - rank1: table | table | tables | counter | Table | cabinet | TABLE | kitchen | ware | served
-Layer 24 - rank2: 球 | ball | pitch | fields | поле | field | Baseball | Field | Field | game
-Layer 24 - rank3: ifen | veget | serv | lett | served | floating | ser | reci | 雲 | cond
-Calculating truth subspace for: model.layers.25.mlp.down_proj.weight
-Layer 25 - rank0: in | . | <0x0A> | and | ( | , | to | on | for | today
-Layer 25 - rank1: pav | street | buildings | trees | park | sk | tail | trees | streets | street
-Layer 25 - rank2: 球 | pitch | ball | Baseball | field | fields | player | поле | Field | Field
-Layer 25 - rank3: baseball | player | players | vest | Baseball | uniform | sport | Player | backwards | spect
-Calculating truth subspace for: model.layers.26.mlp.down_proj.weight
-Layer 26 - rank0: in | . | <0x0A> | and | ( | , | to | on | for | …
-Layer 26 - rank1: street | pav | park | trees | buildings | trees | sk | streets | tree | street
-Layer 26 - rank2: field | 球 | ball | pitch | Baseball | Field | Field | fields | поле | player
-Layer 26 - rank3: baseball | player | att | players | vest | spect | 球 | sport | uniform | Baseball
-Calculating truth subspace for: model.layers.27.mlp.down_proj.weight
-Layer 27 - rank0: in | . | <0x0A> | and | ( | , | to | on | for | …
-Layer 27 - rank1: street | park | pav | trees | trees | streets | buildings | sk | street | city
-Layer 27 - rank2: 球 | field | ball | Baseball | Field | pitch | Field | player | поле | Player
-Layer 27 - rank3: veget | ifen | 雲 | rad | veg | lett | served | ser | lade | cloud
-Calculating truth subspace for: model.layers.28.mlp.down_proj.weight
-Layer 28 - rank0: in | . | <0x0A> | and | ( | , | to | on | for | …
-Layer 28 - rank1: pav | park | street | sk | trees | trees | tail | buildings | streets | city
-Layer 28 - rank2: street | streets | 街 | traffic | ped | Street | city | street | windows | window
-Layer 28 - rank3: att | player | vest | coach | baseball | sport | arms | 手 | backwards | swe
-Calculating truth subspace for: model.layers.29.mlp.down_proj.weight
-Layer 29 - rank0: in | . | <0x0A> | and | ( | , | to | on | for | as
-Layer 29 - rank1: park | street | pav | trees | trees | sk | buildings | streets | tail | street
-Layer 29 - rank2: player | 球 | Player | Baseball | players | baseball | ball | player | field | pitch
-Layer 29 - rank3: player | att | coach | sport | baseball | players | sports | office | vest | swe
-Calculating truth subspace for: model.layers.30.mlp.down_proj.weight
-Layer 30 - rank0: in | . | <0x0A> | , | and | ( | to | on |  | for
-Layer 30 - rank1: table | counter | cabinet | kitchen | table | served | Table | cook | tables | ut
-Layer 30 - rank2: street | Street | 街 | streets | traffic | ped | windows | city | window | street
-Layer 30 - rank3: att | office | vest | coach | window | sport | worn | stra | bus | sports
 Calculating truth subspace for: model.layers.31.mlp.down_proj.weight
 Layer 31 - rank0: and | , | in | . | on | to | with | a | <0x0A> | of
 Layer 31 - rank1: kitchen | table | cook | itchen | 食 | dinner | cup | food | cabinet | chef
 Layer 31 - rank2: Хронологија | playing | athlet | Baseball | Попис | Player | 球 | player | baseball | Zygote
 Layer 31 - rank3: veget | mountains | hills | valle | clouds | veg | mountain | Tomatoes | sea | trees
+Layer 31 - rank4: cabinet | cabin | floor | remote | desktop | wall | computer | chair | 空 | Remote
+Layer 31 - rank5: relax | animals | folk | sheep | beautiful | living | friend | gaz | lov | relax
+Layer 31 - rank6: boxes | display | displays | fans | rows | vend | stands | bunch | clusters | exhib
+Layer 31 - rank7: trees | tree | Baseball | Tree | 草 | grass | bush | Athletics | 野 | woods
+Layer 31 - rank8: lug | sorting | computers | cargo | computer | bind | machines | pack | sorted | storage
+Layer 31 - rank9: computer | leaf | desktop | tree | books | Computer | book | Comput | laptop | digit
+Layer 31 - rank10: snow | 雪 | Snow | gla | ic | winter | fro | sk | ski | kn
+Layer 31 - rank11: archivi | textt | passengers | stations | LENG | seats | serv | servers | carri | gates
+Layer 31 - rank12: computers | office | Office | offices | computing | Menu | servers | Food | Computer | computer
+Layer 31 - rank13: snow | ski | Ski | Snow | 雪 | winter | ski | Winter | après | sk
+Layer 31 - rank14: concrete | stone | walls | Platform | tren | walk | platform | walk | ground | building
+Layer 31 - rank15: snow | ski | Snow | s | Ski | boats | Mountain | ski | batter | Baseball
+Layer 31 - rank16: conference | cho | sal | suite | rooms | cab | passengers | men | flu | veget
+Layer 31 - rank17: tree | Tree | trees | 樹 | branches | Tree | rim | leaves | leaf | boat
+Layer 31 - rank18: work | par | cook | event | festival | k | pav | hors | camp | event
+Layer 31 - rank19: waters | front | shore | water | water | wine | alco | Water | boat | manuel
+Layer 31 - rank20: 動 | Display | 动 | ride | Display | 堂 | rode | display | exhibition | exhib
+Layer 31 - rank21: 馬 | cand | lan | tamb | 器 | traffic | ähl | 舞 | Autres | bott
+Layer 31 - rank22: tennis | court | Tennis | <0x0A> | she | courts | pon | hoof | walk | fol
+Layer 31 - rank23: bus | living | food | entertain | playing | ski | house | board | advert | liv
+Layer 31 - rank24: glo | seat | menu | chair | bill | light | susp | um | vendor | 店
+Layer 31 - rank25: externs | sols | ktiv | jours | Denkmal | KB | kop | 望 | doors | Windows
+Layer 31 - rank26: empty | Empty | bott | empty | wine | park | concrete | park | abandoned | drink
+Layer 31 - rank27: chair | pole | Chair | wooden | cita | ban | seats | strings | ban | seat
+Layer 31 - rank28: walk | signs | sign | safety | Walk | bat | bath | beach | walking | Ocean
+Layer 31 - rank29: Winter | fruit | Apple | crowd | cit | cher | apple | ber | crow | Cit
+Layer 31 - rank30: school | trains | Chinese | school | Asian | School | children | Ori | child | Asia
+Layer 31 - rank31: seat | fol | seats | bus | ban | holes | guys | hole | chair | jam
+Layer 31 - rank32: compart | leak | window | carri | Window | windows | Ulrich | steam | contents | archiv
+Layer 31 - rank33: Sitz | dump | dump | rice | tank | complex | concrete | motor | Taiwan | Asian
+Layer 31 - rank34: restaurant | Japanese | kitchen | Um | Wing | Plant | Korean | Oriental | Asian | wet
+Layer 31 - rank35: cook | clock | tennis | Tennis | cook | Vog | timer | clock | photograph | classic
+Layer 31 - rank36: Past | field | past | field | She | Cover | fields | wa | iel | home
+Layer 31 - rank37: rolling | whe | Bus | office | school | bus | sur | Rol | wheel | Whe
+Layer 31 - rank38: sail | boat | dock | boats | bow | urban | horses | horse | Bow | bow
+Layer 31 - rank39: 雲 | Vietnam | Airl | ref | 朝 | Snow | spect | ained | whites | Korean
+Layer 31 - rank40: bird | vessels | flying | 鳥 | birds | cyl | chair | kou | cycles | flutter
+Layer 31 - rank41: 算 | clock | kmal | boat | token | Navigation | Toy | skap | Token | Navigation
+Layer 31 - rank42: wd | tram | Play | play | Play | be | old | golf | play | Binding
+Layer 31 - rank43: nut | mot | lod | mot | apple | logo | speed | rough | located | hall
+Layer 31 - rank44: tank | high | rain | Cold | mountain | Rain | tub | gran | highway | tower
+Layer 31 - rank45: wet | dri | cook | rain | bol | books | sog | cook | books | lit
+Layer 31 - rank46: sk | Sk | Sk | indexing | ram | indexed | lad | sk | erving | skim
+Layer 31 - rank47: ptop | oco | log | wood | logging | log | wood | Sor | orange | 트
+Layer 31 - rank48: horizon | horse | Hor | Hor | mare | girl | book | hor | hor | hors
+Layer 31 - rank49: Хронологија | fahrt | 章 | rain | tunnel | ша | rain | édé | Попис | chev
+Layer 31 - rank50: crowd | wine | spole | "?> | WIN | 洞 | vessel | thin | nyel | 录
+Layer 31 - rank51: hyd | 色 | colors | 红 | fonts | flow | Colors | font | зь | 口
+Layer 31 - rank52: plate | book | SU | cars | pick | protect | gate | catch | guard | plate
+Layer 31 - rank53: portrait | png | ppa | rolling | Mand | pixels | ideo | picture | past | Canvas
+Layer 31 - rank54: windows | window | Window | vol | bag | bag | vol | driver | phere | vehicle
+Layer 31 - rank55: K | Cat | Mas | Bath | C | ката | Be | Pos | Bond | Bor
+Layer 31 - rank56: clou | tall | Sto | chair | Vert | bottom | Chair | Stand | Baby | height
+Layer 31 - rank57: raph | дов | rage | bund | WR | wig | ┐ | 红 | Ď | ново
+Layer 31 - rank58: gate | Britann | gates | military | 飛 | iere | rund | cabin | amet | mock
+Layer 31 - rank59: glass | squ | etten | rail | glass | grid | tram | tra | feed | sheets
+Layer 31 - rank60: bronze | spr | overflow | empty | park | dump | autom | automat | Park | locked
+Layer 31 - rank61: meck | trees | slice | implements | alet | trees | ツ | ostęp | ště | Game
+Layer 31 - rank62: gra | c | park | woman | herself | re | symbol | she | batt | ing
+Layer 31 - rank63: Train | train | trains | 站 | train | punk | Platform | Station | station | Station
+Layer 31 - rank64: covers | cup | blue | patch | plates | pill | Blue | atform | covering | plate
+Layer 31 - rank65: aud | plant | Ban | jourd | pan | pot | oven | stad | Plant | ann
+Layer 31 - rank66: restored | fi | boot | ca | hyd | sedan | slope | overhead | listade | tart
+Layer 31 - rank67: white | stack | delivery | elivery | white | behind | ruck | square | garden | kil
+Layer 31 - rank68: Gra | pir | trains | din | amentos | mig | gra | Franco | migr | іль
+Layer 31 - rank69: bare | bare | bearing | bear | displays | displaying | flat | displayed | Police | blank
+Layer 31 - rank70: sn | sg | sni | sm | ภ | 象 | cut | 清 | s | 足
+Layer 31 - rank71: ele | lär | uits | dance | docs | aug | overlap | opens | izi | docs
+Layer 31 - rank72: Fire | Feuer | fire | fires | Safari | fire | brid | Fire | Creative | stud
+Layer 31 - rank73: race | cub | Grid | riv | log | racing | gr | Euro | races | grid
+Layer 31 - rank74: 波 | emark | fútbol | Mobile | mobile | agen | Хронологија | ão | Blue | anv
+Layer 31 - rank75: dog | mouth | dog | Dog | Beg | t | wire | basket | Sn | wire
+Layer 31 - rank76: sand | slide | Sand | sales | pit | slide | coal | sla | atch | dash
+Layer 31 - rank77: hyd | flowers | plant | cycl | sog | hay | flower | pal | bou | ografia
+Layer 31 - rank78: logs | tub | additional | bath | ben | the | frames | open | foo | fonts
+Layer 31 - rank79: blue | hall | Blue | blue | mir | laz | Blue | bat | hall | bero
+Layer 31 - rank80: Cub | Alert | Diego | Colomb | Ces | Spanish | Stre | Rect | Cav | Tu
+Layer 31 - rank81: bed | Bed | bed | lad | Bow | dialog | s | tr | head | né
+Layer 31 - rank82: rock | Rock | rock | rocks | Jefferson | press | Gran | ber | ber | gran
+Layer 31 - rank83: boxes | ban | bat | steam | 書 | cart | ele | Ele | box | yle
+Layer 31 - rank84: Television | Ted | television | wire | assembly | wet | TD | sak | convey | td
+Layer 31 - rank85: opening | open | chain | Sho | sho | shop | Chinese | Open | opens | Hong
+Layer 31 - rank86: san | agnet | décembre | 城 | cab | Сан | lock | chain | lett | scar
+Layer 31 - rank87: télé | cell | phone | tele | phone | ⁻ | mana | root | tel | FC
+Layer 31 - rank88: sword | squ | fire | slash | dead | squ | Circle | swing | slash | dispers
+Layer 31 - rank89: Bow | bow | Bowl | Atl | dens | heavily | bow | heavy | dense | gros
+Layer 31 - rank90: cow | Cow | camera | cow | Camera | Camera | cattle | rain | dispose | dispos
+Layer 31 - rank91: cur | curios | Che | curious | che | bro | Che | cool | student | drawn
+Layer 31 - rank92: cam | TV | carried | soft | lights | camera | rear | warm | flags | Sony
+Layer 31 - rank93: Flora | Bird | bird | elligence | wheel | Imper | rose | Widget | rolling | ruck
+Layer 31 - rank94: spher | hung | glob | stars | whe | fi | rounded | tid | Rafael | Hub
+Layer 31 - rank95: sh | TLS | ore | lok | ombres | Ref | dra | soft | Rö | dra

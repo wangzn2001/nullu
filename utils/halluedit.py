@@ -13,7 +13,7 @@ import cv2
 logging.getLogger().setLevel(logging.INFO)
 
 class HalluEdit():
-    def __init__(self, model, ebd='mean', centering=False, top_k_ranks=2, top_k_ranks_truth=2,  edit_layer_range=None, random_dps=True, alpha=1):
+    def __init__(self, model, ebd='mean', centering=False, top_k_ranks=2, top_k_ranks_truth=2,  edit_layer_range=None, edit_layer_range_truth=None, random_dps=True, alpha=1):
 
         self.model = model
         self.model.model.eval()
@@ -51,6 +51,10 @@ class HalluEdit():
             self.edit_layer_range = np.arange(self.num_layers)
         else:
             self.edit_layer_range = edit_layer_range
+        if edit_layer_range_truth is None:
+            self.edit_layer_range_truth = np.arange(self.num_layers)
+        else:
+            self.edit_layer_range_truth = edit_layer_range_truth
 
         self.f = open(f'logit_lens_test_{model.args.model_name}.txt', 'w')
 
@@ -252,7 +256,7 @@ class HalluEdit():
 
         for key in svd_truth.keys():
             layer_num = int(key.split('.')[self.lm_sep_idx])  # Format: 'language_model.model.layers.0.mlp.up_proj.weight'
-            if layer_num not in self.edit_layer_range:
+            if layer_num not in self.edit_layer_range_truth:
                 logging.info(f'Skipping layer {layer_num}')
                 continue
             self.f.write(f'Calculating truth subspace for: {key}\n')
@@ -260,16 +264,19 @@ class HalluEdit():
 
             singular_vectors = svd_truth[key]['v']  # (D, N): N cols of (D,) vectors
             # singular_list.append(singular_vectors) 
-            truth_rank_list = np.arange(self.top_k_ranks_truth)  # [0, 1] by default
+            if self.top_k_ranks_truth == 0:
+                p_truth = torch.eye(self.D)
+            else:    
+                truth_rank_list = np.arange(self.top_k_ranks_truth)  # [0, 1] by default
 
-            # Sum outer products of shortlisted ranks
-            p_truth = torch.zeros(self.D, self.D)
-            for r in truth_rank_list:
-                singular_vector = singular_vectors[:, r].unsqueeze(dim=1)  # (D, 1)
-                p_truth += singular_vector @ singular_vector.T  # (D, 1) @ (1, D) -> (D, D)
+                # Sum outer products of shortlisted ranks
+                p_truth = torch.zeros(self.D, self.D)
+                for r in truth_rank_list:
+                    singular_vector = singular_vectors[:, r].unsqueeze(dim=1)  # (D, 1)
+                    p_truth += singular_vector @ singular_vector.T  # (D, 1) @ (1, D) -> (D, D)
 
-                sorted_tokens = self.project_into_vocabluary(singular_vector.squeeze(), self.E.cpu(), self.tokenizer, top_k=10)
-                self.f.write(f'Layer {layer_num} - rank{r}: {" | ".join([x for x in sorted_tokens])}\n')
+                    sorted_tokens = self.project_into_vocabluary(singular_vector.squeeze(), self.E.cpu(), self.tokenizer, top_k=10)
+                    self.f.write(f'Layer {layer_num} - rank{r}: {" | ".join([x for x in sorted_tokens])}\n')
 
             truth_subspace[key] = p_truth
         # singular_tensor = torch.stack([sv.clone().detach() for sv in singular_list]) 
