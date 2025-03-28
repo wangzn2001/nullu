@@ -8,3 +8,4 @@ output/
 minigpt4/pretrained_minigpt4_llama2_7b.pth
 pattern/
 *.txt
+*.pyc
