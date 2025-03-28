@@ -96,7 +96,7 @@ def main(args):
         layer_range = np.arange(args.lowest_layer, args.highest_layer)
     
     editor = HalluEdit(model=model, ebd=args.ebd, centering=args.centering, alpha=args.alpha,
-                       top_k_ranks=args.top_k_ranks, edit_layer_range=layer_range, random_dps=True)
+                       top_k_ranks=args.top_k_ranks, top_k_ranks_truth=args.top_k_ranks_truth, edit_layer_range=layer_range, random_dps=True)
 
     edited_model = editor.apply_edit_end_to_end(pos_data, neg_data, 
                                                 edit_keys=args.edit_keys, edit_values=args.edit_values, layer_range=layer_range)
@@ -107,7 +107,7 @@ def main(args):
 
     save_tag = f"-{args.save}" if args.save is not None else ""
 
-    save_name = f"{args.model_name}-top{args.top_k_ranks}-{args.lowest_layer}-{args.highest_layer}{save_tag}"
+    save_name = f"{args.model_name}-top{args.top_k_ranks}-top{args.top_k_ranks_truth}truth-{args.lowest_layer}-{args.highest_layer}{save_tag}"
     save_path = os.path.join(args.save_model_dir, save_name)
     
     config_paths = {
@@ -136,6 +136,7 @@ if __name__ == "__main__":
     parser.add_argument("--edit_values", action="store_true", default=True)
 
     parser.add_argument("--top_k_ranks", type=int, default=4) #
+    parser.add_argument("--top_k_ranks_truth", type=int, default=4) #
     parser.add_argument("--lowest_layer", type=int, default=16) # 31-32,16-32,16-24,24-32
     parser.add_argument("--highest_layer", type=int, default=32) #
 

@@ -13,7 +13,7 @@ import cv2
 logging.getLogger().setLevel(logging.INFO)
 
 class HalluEdit():
-    def __init__(self, model, ebd='mean', centering=False, top_k_ranks=2, edit_layer_range=None, random_dps=True, alpha=1):
+    def __init__(self, model, ebd='mean', centering=False, top_k_ranks=2, top_k_ranks_truth=2,  edit_layer_range=None, random_dps=True, alpha=1):
 
         self.model = model
         self.model.model.eval()
@@ -46,6 +46,7 @@ class HalluEdit():
         self.random_dps = random_dps
         self.centering = centering
         self.top_k_ranks = top_k_ranks
+        self.top_k_ranks_truth = top_k_ranks_truth
         if edit_layer_range is None:
             self.edit_layer_range = np.arange(self.num_layers)
         else:
@@ -259,7 +260,7 @@ class HalluEdit():
 
             singular_vectors = svd_truth[key]['v']  # (D, N): N cols of (D,) vectors
             # singular_list.append(singular_vectors) 
-            truth_rank_list = np.arange(self.top_k_ranks)  # [0, 1] by default
+            truth_rank_list = np.arange(self.top_k_ranks_truth)  # [0, 1] by default
 
             # Sum outer products of shortlisted ranks
             p_truth = torch.zeros(self.D, self.D)

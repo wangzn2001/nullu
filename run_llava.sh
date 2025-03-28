@@ -1,5 +1,5 @@
 CUDA_VISIBLE_DEVICES=7 python scripts/model_run.py --model_name LLaVA-7B --model_path llava/llava-v1.5-7b
-CUDA_VISIBLE_DEVICES=7 python scripts/model_edit.py --model_name LLaVA-7B --model_path llava/llava-v1.5-7b --emb_path output/LLaVA-7B/lure_train_42_activations.pkl --top_k_ranks 4 --lowest_layer 16 --highest_layer 32 --save truth
-CUDA_VISIBLE_DEVICES=7 python scripts/model_response.py --model_name LLaVA-7B --model_path output/edited_model/LLaVA-7B-top4-16-32-test --dataset chair --num_samples 500 --num_beams 3 --max_length 64 --seed 42
+CUDA_VISIBLE_DEVICES=2 python scripts/model_edit.py --model_name LLaVA-7B --model_path llava/llava-v1.5-7b --emb_path output/LLaVA-7B/lure_train_42_activations.pkl --top_k_ranks 4 --top_k_ranks_truth 48 --lowest_layer 16 --highest_layer 32 --save truth
+CUDA_VISIBLE_DEVICES=2 python scripts/model_response.py --model_name LLaVA-7B --model_path output/edited_model/LLaVA-7B-top4-16-32-truth --dataset chair --num_samples 500 --num_beams 3 --max_length 64 --seed 42
 CUDA_VISIBLE_DEVICES=7 python scripts/model_response.py --model_name LLaVA-7B --model_path output/edited_model/LLaVA-7B-top4-16-32-test --dataset pope --num_samples 500 --num_beams 3 --max_length 64 --seed 42 
 CUDA_VISIBLE_DEVICES=7 python scripts/model_response.py --model_name LLaVA-7B --model_path output/edited_model/LLaVA-7B-top4-16-32-test --dataset opope --num_samples 500 --num_beams 3 --max_length 256 --seed 42
