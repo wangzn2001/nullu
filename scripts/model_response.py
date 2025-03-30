@@ -15,8 +15,8 @@ from dataset import build_dataset
 import random, torch
 import torch.backends.cudnn as cudnn
 
-os.environ['http_proxy'] = 'http://127.0.0.1:47890'
-os.environ['https_proxy'] = 'http://127.0.0.1:47890'
+os.environ['http_proxy'] = 'http://127.0.0.1:7890'
+os.environ['https_proxy'] = 'http://127.0.0.1:7890'
 
 
 def get_model_answer_chair(args, data, model, answer_file):

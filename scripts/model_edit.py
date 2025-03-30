@@ -108,7 +108,7 @@ def main(args):
 
     save_tag = f"-{args.save}" if args.save is not None else ""
 
-    save_name = f"{args.model_name}-top{args.top_k_ranks}-top{args.top_k_ranks_truth}truth-{args.lowest_layer}-{args.highest_layer}--{args.lowest_layer_truth}truth-{args.highest_layer_truth}truth--{save_tag}"
+    save_name = f"{args.model_name}-top{args.top_k_ranks}-top{args.top_k_ranks_truth}truth-{args.lowest_layer}-{args.highest_layer}--{args.lowest_layer_truth}truth-{args.highest_layer_truth}truth---{args.ebd}"
     save_path = os.path.join(args.save_model_dir, save_name)
     
     config_paths = {
