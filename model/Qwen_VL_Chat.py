@@ -1,5 +1,7 @@
 from typing import Optional
+import sys
 import torch
+sys.path.append("../qwen_vl_chat/")
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from transformers.generation import GenerationConfig
 from qwen_vl_chat.modeling_qwen import make_context

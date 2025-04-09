@@ -52,22 +52,14 @@ def load_embedding_data(pkl_path, loc):
     return pos_data, neg_data
 
 
-def save_model_and_config(tokenizer, edited_model, save_path, model_name, config_paths):
+def save_model_and_config(hallu_vectors, truth_vectors, save_path):
 
     os.makedirs(save_path, exist_ok=True)
-    tokenizer.save_pretrained(save_path)
     
-    if model_name == 'MiniGPT4':
-        edited_model.llama_model.save_pretrained(save_path)
-    else:
-        edited_model.save_pretrained(save_path)
-
-    for config_name, config_path in config_paths.items():
-        if os.path.exists(config_path):
-            shutil.copy(config_path, os.path.join(save_path, config_name))
-            print(f"Copied {config_path} to {save_path}")
-
-    print(f'Saved edited model to {save_path}')
+    torch.save(hallu_vectors, os.path.join(save_path, 'hallu_vectors.pth'))
+    torch.save(truth_vectors, os.path.join(save_path, 'truth_vectors.pth'))
+    print(f'Saved vectors to {save_path}')
+    # print(f'Saved edited model to {save_path}')
 
 
 def main(args):
@@ -98,24 +90,17 @@ def main(args):
     editor = HalluEdit(model=model, ebd=args.ebd, centering=args.centering, alpha=args.alpha,
                        top_k_ranks=args.top_k_ranks, top_k_ranks_truth=args.top_k_ranks_truth, edit_layer_range=layer_range, random_dps=True)
 
-    edited_model = editor.apply_edit_end_to_end(pos_data, neg_data, 
+    hallu_vectors, truth_vectors = editor.save_vectors(pos_data, neg_data, 
                                                 edit_keys=args.edit_keys, edit_values=args.edit_values, layer_range=layer_range)
     
     # Save edited model
-    save_dir = args.save_model_dir
+    save_dir = args.tensors_path
     os.makedirs(save_dir, exist_ok=True)
 
-    save_tag = f"-{args.save}" if args.save is not None else ""
-
     save_name = f"{args.model_name}-top{args.top_k_ranks}-top{args.top_k_ranks_truth}truth-{args.lowest_layer}-{args.highest_layer}--{args.ebd}"
-    save_path = os.path.join(args.save_model_dir, save_name)
-    
-    config_paths = {
-        'preprocessor_config.json': os.path.join(args.model_path, 'preprocessor_config.json'),
-        'configuration.json': os.path.join(args.model_path, 'configuration.json')
-    }
+    save_path = os.path.join(args.tensors_path, save_name)
 
-    save_model_and_config(editor.tokenizer, edited_model, save_path, args.model_name, config_paths)
+    save_model_and_config(hallu_vectors, truth_vectors, save_path)
 
 
 if __name__ == "__main__":
@@ -140,7 +125,6 @@ if __name__ == "__main__":
     parser.add_argument("--lowest_layer", type=int, default=16) # 31-32,16-32,16-24,24-32
     parser.add_argument("--highest_layer", type=int, default=32) #
 
-    parser.add_argument("--save_model_dir", type=str, default="./output/edited_model")
-    parser.add_argument("--save", type=str, default="test")
-    
+    parser.add_argument("--tensors_path", type=str, default="./output/saved_tensors")
+
     main(parser.parse_args())

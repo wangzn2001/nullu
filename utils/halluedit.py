@@ -13,7 +13,7 @@ import cv2
 logging.getLogger().setLevel(logging.INFO)
 
 class HalluEdit():
-    def __init__(self, model, ebd='mean', centering=False, top_k_ranks=2, top_k_ranks_truth=2,  edit_layer_range=None, edit_layer_range_truth=None, random_dps=True, alpha=1):
+    def __init__(self, model, ebd='mean', centering=False, top_k_ranks=2, top_k_ranks_truth=2, edit_layer_range=None, random_dps=True, alpha=1):
 
         self.model = model
         self.model.model.eval()
@@ -47,14 +47,12 @@ class HalluEdit():
         self.centering = centering
         self.top_k_ranks = top_k_ranks
         self.top_k_ranks_truth = top_k_ranks_truth
+        self.hallu_vectors = None
+        self.truth_vectors = None
         if edit_layer_range is None:
             self.edit_layer_range = np.arange(self.num_layers)
         else:
             self.edit_layer_range = edit_layer_range
-        if edit_layer_range_truth is None:
-            self.edit_layer_range_truth = np.arange(self.num_layers)
-        else:
-            self.edit_layer_range_truth = edit_layer_range_truth
 
         self.f = open(f'logit_lens_test_{model.args.model_name}.txt', 'w')
 
@@ -115,7 +113,7 @@ class HalluEdit():
         non_preferred_sent_embs = self._get_hidden_sentence_embeddings(pos_data) if isinstance(pos_data, list) else pos_data.permute(1, 0, 2)  # (L, N, D)
         preferred_sent_embs = self._get_hidden_sentence_embeddings(neg_data) if isinstance(neg_data, list) else neg_data.permute(1, 0, 2)  # (L, N, D)
 
-        # difference_matrix = (preferred_sent_embs - non_preferred_sent_embs)  # (L, N, D)
+        # difference_matrix = (preferred_sent_embs - non_preferred_sent_embs) / 2 # (L, N, D)
         difference_matrix = non_preferred_sent_embs  # (L, N, D)
         truth_matrix = preferred_sent_embs
 
@@ -225,7 +223,7 @@ class HalluEdit():
 
     def find_p_hallu(self, svd, svd_truth, rank_range=20):
         hallu_subspace = {}
-
+        hallu_vectors = {}
         # singular_list = []
         for key in svd.keys():
             layer_num = int(key.split('.')[self.lm_sep_idx])  # Format: 'language_model.model.layers.0.mlp.up_proj.weight'
@@ -234,30 +232,32 @@ class HalluEdit():
                 continue
             self.f.write(f'Calculating hallu subspace for: {key}\n')
             logging.info(f'Calculating hallu subspace for: {key}')
-
+            
             singular_vectors = svd[key]['v']  # (D, N): N cols of (D,) vectors
             # singular_list.append(singular_vectors) 
             hallu_rank_list = np.arange(self.top_k_ranks)  # [0, 1] by default
-
             # Sum outer products of shortlisted ranks
             p_hallu = torch.zeros(self.D, self.D)
+
+            hallu_vec = []
             for r in hallu_rank_list:
                 singular_vector = singular_vectors[:, r].unsqueeze(dim=1)  # (D, 1)
                 p_hallu += singular_vector @ singular_vector.T  # (D, 1) @ (1, D) -> (D, D)
-
+                hallu_vec.append(singular_vector)
                 sorted_tokens = self.project_into_vocabluary(singular_vector.squeeze(), self.E.cpu(), self.tokenizer, top_k=10)
                 self.f.write(f'Layer {layer_num} - rank{r}: {" | ".join([x for x in sorted_tokens])}\n')
-
+            
+            hallu_vectors[layer_num] = torch.stack(hallu_vec, dim=0)
             hallu_subspace[key] = p_hallu
         # singular_tensor = torch.stack([sv.clone().detach() for sv in singular_list]) 
         # torch.save(singular_tensor, 'singular_lure_layers16-32.pkl') 
         logging.info('Hallu subspace calculated.')
 
         truth_subspace = {}
-
+        truth_vectors = {}
         for key in svd_truth.keys():
             layer_num = int(key.split('.')[self.lm_sep_idx])  # Format: 'language_model.model.layers.0.mlp.up_proj.weight'
-            if layer_num not in self.edit_layer_range_truth:
+            if layer_num not in self.edit_layer_range:
                 logging.info(f'Skipping layer {layer_num}')
                 continue
             self.f.write(f'Calculating truth subspace for: {key}\n')
@@ -265,8 +265,12 @@ class HalluEdit():
 
             singular_vectors = svd_truth[key]['v']  # (D, N): N cols of (D,) vectors
             # singular_list.append(singular_vectors) 
+            truth_vec = []
             if self.top_k_ranks_truth == 0:
                 p_truth = torch.eye(self.D)
+                truth_vec.append(torch.zeros(self.D))
+                self.f.write('top_k_ranks_truth is zero !!!')
+                logging.info('top_k_ranks_truth is zero !!!')
             else:    
                 truth_rank_list = np.arange(self.top_k_ranks_truth)  # [0, 1] by default
 
@@ -274,16 +278,19 @@ class HalluEdit():
                 p_truth = torch.zeros(self.D, self.D)
                 for r in truth_rank_list:
                     singular_vector = singular_vectors[:, r].unsqueeze(dim=1)  # (D, 1)
+                    truth_vec.append(singular_vector)
                     p_truth += singular_vector @ singular_vector.T  # (D, 1) @ (1, D) -> (D, D)
 
                     sorted_tokens = self.project_into_vocabluary(singular_vector.squeeze(), self.E.cpu(), self.tokenizer, top_k=10)
                     self.f.write(f'Layer {layer_num} - rank{r}: {" | ".join([x for x in sorted_tokens])}\n')
-
+            truth_vectors[layer_num] = torch.stack(truth_vec, dim=0)
             truth_subspace[key] = p_truth
+
+        
         # singular_tensor = torch.stack([sv.clone().detach() for sv in singular_list]) 
         # torch.save(singular_tensor, 'singular_lure_layers16-32.pkl') 
         logging.info('Truth subspace calculated.')
-        return hallu_subspace, truth_subspace
+        return hallu_subspace, truth_subspace, hallu_vectors, truth_vectors
 
 
     def edit_model(self, hallu_subspace, truth_subspace, edit_keys=True, edit_values=True, layer_range=None):
@@ -337,6 +344,7 @@ class HalluEdit():
 
         self.model.model.load_state_dict(edited_state_dict, assign=True)
         logging.info('Edited model created.')
+        
         return self.model.model
 
 
@@ -345,11 +353,16 @@ class HalluEdit():
         svd, svd_truth = self.svd_on_ats(ats, ats_truth)
         del ats
         del ats_truth
-        self.hallu_subspace, self.truth_subspace = self.find_p_hallu(svd, svd_truth)
+        self.hallu_subspace, self.truth_subspace, hallu_vectors, truth_vectors = self.find_p_hallu(svd, svd_truth)
         del svd
         del svd_truth
         torch.cuda.empty_cache()
+        return hallu_vectors, truth_vectors
 
+    def save_vectors(self, pos_data, neg_data, edit_keys=True, edit_values=True, layer_range=None):
+        hallu_vectors, truth_vectors = self.setup_for_edits(pos_data, neg_data)
+        torch.cuda.empty_cache()
+        return hallu_vectors, truth_vectors
 
     def apply_edit_end_to_end(self, pos_data, neg_data, edit_keys=True, edit_values=True, layer_range=None):
         # Measure speed and memory use
@@ -364,10 +377,10 @@ class HalluEdit():
         # before_gpu_memory_used = info.used
 
         # Find P_hallu
-        self.setup_for_edits(pos_data, neg_data)
+        hallu_vectors, truth_vectors = self.setup_for_edits(pos_data, neg_data)
 
         # Apply edit
-        edited_model = self.edit_model(self.hallu_subspace, self.truth_subspace, edit_keys, edit_values, layer_range)
+        edited_model= self.edit_model(self.hallu_subspace, self.truth_subspace, edit_keys, edit_values, layer_range)
         torch.cuda.empty_cache()
 
         # end_time = time.time()
@@ -378,6 +391,4 @@ class HalluEdit():
         # print(f"Elapsed time: {end_time - start_time} seconds")
         # print(f"System Memory Used: {(after_memory - before_memory) / (1024 * 1024)} MB")
         # print(f"GPU Memory Used: {(after_gpu_memory_used - before_gpu_memory_used) / (1024 ** 2)} MB")
-
-        return edited_model
     

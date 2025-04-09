@@ -6,7 +6,6 @@ import argparse
 import random
 import pickle
 import time
-
 import cv2
 import json
 import numpy as np
@@ -17,6 +16,9 @@ from tqdm import tqdm
 from model import build_model
 from dataset import build_dataset
 
+
+os.environ['http_proxy'] = 'http://127.0.0.1:7890'
+os.environ['https_proxy'] = 'http://127.0.0.1:7890'
 
 def get_model_activtion(args, data, model, saved_file):
 
@@ -81,7 +83,7 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog='Run a model')
-    parser.add_argument("--model_name", choices=['LLaVA-7B', 'MiniGPT4', 'mPLUG_Owl2'], default="MiniGPT4") 
+    parser.add_argument("--model_name", choices=['LLaVA-7B', 'MiniGPT4', 'mPLUG_Owl2', 'Qwen_VL_Chat'], default="MiniGPT4") 
     parser.add_argument("--model_path", default="/workspace/data1/huggingface/hub/models--meta-llama--Llama-2-7b-chat-hf/snapshots/f5db02db724555f92da89c216ac04704f23d4590")
     parser.add_argument("--dataset", default="lure")
     parser.add_argument("--split", default="train")

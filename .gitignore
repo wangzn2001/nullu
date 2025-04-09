@@ -9,3 +9,5 @@ minigpt4/pretrained_minigpt4_llama2_7b.pth
 pattern/
 *.txt
 *.pyc
+instructblip-vicuna-7b/
+qwen_vl_chat/
