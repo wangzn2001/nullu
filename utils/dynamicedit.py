@@ -154,7 +154,7 @@ class DynamicEdit():
                             target_layer = self.model.model.llama_model.model.layers[layer_num].mlp.up_proj
                         else:
                             target_layer = self.model.model.model.layers[layer_num].mlp.up_proj # LLAVA
-                        def new_forward(self, input):
+                        def new_forward(self, input, modified_weight=modified_weight):
                             # modified_weight = self.weight + modified_weight
                             return F.linear(input, modified_weight.T, self.bias)
                         target_layer.forward = types.MethodType(new_forward, target_layer)     
@@ -164,9 +164,8 @@ class DynamicEdit():
                             target_layer = self.model.model.llama_model.model.layers[layer_num].mlp.down_proj
                         else:
                             target_layer = self.model.model.model.layers[layer_num].mlp.down_proj # LLAVA
-                        def new_forward(self, input, modified_weight=modified_weight, current_filter=P_filter_right):
+                        def new_forward(self, input, modified_weight=modified_weight):
                             # modified_weight = self.weight + modified_weight
-                            print(current_filter)
                             return F.linear(input, modified_weight.T, self.bias)
                         target_layer.forward = types.MethodType(new_forward, target_layer)     
                     elif 'c_proj' in key: # Qwen_VL_Chat
