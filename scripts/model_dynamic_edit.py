@@ -20,24 +20,20 @@ os.environ['http_proxy'] = 'http://127.0.0.1:7890'
 os.environ['https_proxy'] = 'http://127.0.0.1:7890'
 
 
-def dynamic_edit(args, model):
+def dynamic_edit(args, model, hallu_vectors, truth_vectors):
     if args.lowest_layer == -1 or args.highest_layer == -1:
         layer_range = None
     else:
         layer_range = np.arange(args.lowest_layer, args.highest_layer)
 
     editor = DynamicEdit(model=model, top_k_ranks=args.top_k_ranks, top_k_ranks_truth=args.top_k_ranks_truth, edit_layer_range=layer_range)
-    hallu_path = os.path.join(args.tensors_path, 'hallu_vectors.pth')
-    truth_path = os.path.join(args.tensors_path, 'truth_vectors.pth')
-    hallu_vectors = torch.load(hallu_path)
-    truth_vectors = torch.load(truth_path)
-
+    
     edited_model = editor.edit(hallu_vectors, truth_vectors, edit_keys=args.edit_keys, edit_values=args.edit_values)
 
     return edited_model
     
 
-def get_model_answer_chair(args, data, model, answer_file):
+def get_model_answer_chair(args, data, model, answer_file, hallu_vectors, truth_vectors):
     
     with open(answer_file, 'w') as ans_file:
         for ins in tqdm(data):
@@ -45,7 +41,7 @@ def get_model_answer_chair(args, data, model, answer_file):
             image_path = ins['image_path']
             prompt = ins['question']
             
-            edited_model = dynamic_edit(args, model)
+            edited_model = dynamic_edit(args, model, hallu_vectors, truth_vectors)
 
             response = edited_model.chat(image_path, prompt)
 
@@ -57,11 +53,11 @@ def get_model_answer_chair(args, data, model, answer_file):
             }
 
             ans_file.write(json.dumps(out) + "\n")
-
+            raise AttributeError("The edited model does not have a 'chat' function.")
     print(f'----CHAIR----\nSaved responses to {answer_file}')
 
 
-def get_model_answer_pope(args, data, model, answer_file):
+def get_model_answer_pope(args, data, model, answer_file, hallu_vectors, truth_vectors):
 
     for strategy, sub_data in data.items():
 
@@ -72,7 +68,7 @@ def get_model_answer_pope(args, data, model, answer_file):
         with open(chat_save_file, 'w') as ans_file:
             for ins in tqdm(sub_data):
 
-                edited_model = dynamic_edit(args, model)
+                edited_model = dynamic_edit(args, model, hallu_vectors, truth_vectors)
 
                 response = edited_model.chat(ins['image_path'], ins['question']).strip()
 
@@ -99,9 +95,16 @@ def main(args):
 
     model = build_model(args)
     
-    data = build_dataset(args.dataset, args.split, args.sampling, args.num_samples)    
+    data = build_dataset(args.dataset, args.split, args.sampling, args.num_samples)
 
-    save_dir = f"./eval/{args.dataset}/{args.tensors_path.split('/')[-1]}_test/"
+    hallu_path = os.path.join(args.tensors_path, 'hallu_vectors.pth')
+    truth_path = os.path.join(args.tensors_path, 'truth_vectors.pth')
+    hallu_vectors = torch.load(hallu_path)
+    truth_vectors = torch.load(truth_path)
+    
+    
+
+    save_dir = f"./eval/{args.dataset}/{args.tensors_path.split('/')[-1]}/"
     os.makedirs(save_dir, exist_ok=True)
 
     model_tag = (
@@ -115,13 +118,13 @@ def main(args):
     )
 
     if args.dataset == "chair":
-        get_model_answer_chair(args, data, model, save_file)
+        get_model_answer_chair(args, data, model, save_file, hallu_vectors, truth_vectors)
 
         from calculate_chair import chair_calculation
         chair_calculation(save_file)
 
     elif args.dataset == "pope":
-        get_model_answer_pope(args, data, model, save_file)
+        get_model_answer_pope(args, data, model, save_file, hallu_vectors, truth_vectors)
 
         from calculate_pope import pope_calculation
         pope_calculation(save_dir)

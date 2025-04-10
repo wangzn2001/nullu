@@ -105,7 +105,11 @@ class DynamicEdit():
             edited_state_dict = self.model.model.state_dict()
             
             key_dict = self.filter_key()
-   
+
+            # for key in key_dict:
+            #     print(key)
+            # raise AttributeError("The edited model does not have a 'chat' function.")
+
             for key in key_dict:
                 layer_num = int(key.split('.')[self.lm_sep_idx])
                 if layer_num in self.edit_layer_range:
@@ -129,7 +133,9 @@ class DynamicEdit():
                             truth_vec = truth_vectors[layer_num][rank]
                             truth_matrix += truth_vec @ truth_vec.T
                         truth_filter = truth_matrix
-                    
+                    if layer_num == 31:
+                        print(f"hallu_filter:{hallu_filter}")
+                        print(f"truth_filter:{truth_filter}")
                     P_filter_left = hallu_filter @ truth_filter
                     P_filter_right = truth_filter @ hallu_filter
                     if self.model.args.model_name == 'MiniGPT4':
@@ -144,8 +150,25 @@ class DynamicEdit():
 
                     if edit_keys and 'up_proj' in key:
                         modified_weight = P_filter_left @ weight  # (D, D) @ (D, 4D) -> (D, 4D)
+                        if self.model.args.model_name == 'MiniGPT4':
+                            target_layer = self.model.model.llama_model.model.layers[layer_num].mlp.up_proj
+                        else:
+                            target_layer = self.model.model.model.layers[layer_num].mlp.up_proj # LLAVA
+                        def new_forward(self, input):
+                            # modified_weight = self.weight + modified_weight
+                            return F.linear(input, modified_weight.T, self.bias)
+                        target_layer.forward = types.MethodType(new_forward, target_layer)     
                     elif edit_values and 'down_proj' in key:
-                        modified_weight = weight @ P_filter_right  # (4D, D) @ (D, D) -> (4D, D)
+                        modified_weight = weight @ P_filter_right 
+                        if self.model.args.model_name == 'MiniGPT4':
+                            target_layer = self.model.model.llama_model.model.layers[layer_num].mlp.down_proj
+                        else:
+                            target_layer = self.model.model.model.layers[layer_num].mlp.down_proj # LLAVA
+                        def new_forward(self, input, modified_weight=modified_weight, current_filter=P_filter_right):
+                            # modified_weight = self.weight + modified_weight
+                            print(current_filter)
+                            return F.linear(input, modified_weight.T, self.bias)
+                        target_layer.forward = types.MethodType(new_forward, target_layer)     
                     elif 'c_proj' in key: # Qwen_VL_Chat
                         print('c_proj')
                         modified_weight = weight @ P_filter_right
@@ -153,11 +176,7 @@ class DynamicEdit():
                         print('no modified_weight')
                         continue
 
-                    target_layer = self.model.model.model.layers[layer_num].mlp.down_proj
-                    def new_forward(self, input):
-                        # modified_weight = self.weight + modified_weight
-                        return F.linear(input, modified_weight.T, self.bias)
-                    target_layer.forward = types.MethodType(new_forward, target_layer)     
+                    
             #         if torch.allclose(weight, modified_weight) and ('gate_proj' not in key):
             #             # logging.warning(f'Module {key} not edited after projection.')
             #             print(f'Module {key} not edited after projection.')
