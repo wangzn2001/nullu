@@ -3,7 +3,7 @@ import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import argparse
 import time
-
+import pickle
 import cv2
 import json
 import numpy as np
@@ -15,33 +15,68 @@ from dataset import build_dataset
 import random, torch
 import torch.backends.cudnn as cudnn
 from utils.dynamicedit import DynamicEdit
-
+import torch.nn.functional as F
 os.environ['http_proxy'] = 'http://127.0.0.1:7890'
 os.environ['https_proxy'] = 'http://127.0.0.1:7890'
 
 
-def dynamic_edit(args, model, hallu_vectors, truth_vectors):
+def dynamic_edit(args, model, hallu_vectors, truth_vectors, rank_hallu, rank_truth):
     if args.lowest_layer == -1 or args.highest_layer == -1:
         layer_range = None
     else:
         layer_range = np.arange(args.lowest_layer, args.highest_layer)
 
-    editor = DynamicEdit(model=model, top_k_ranks=args.top_k_ranks, top_k_ranks_truth=args.top_k_ranks_truth, edit_layer_range=layer_range)
+    editor = DynamicEdit(model=model, top_k_ranks=rank_hallu, top_k_ranks_truth=rank_truth, edit_layer_range=layer_range)
     
     edited_model = editor.edit(hallu_vectors, truth_vectors, edit_keys=args.edit_keys, edit_values=args.edit_values)
 
     return edited_model
     
+def load_embedding_data(args, device):
+    emb_path = args.emb_path
+    if not os.path.exists(emb_path):
+        raise FileNotFoundError(f"File not found: {emb_path}")
+
+    with open(emb_path, 'rb') as file:
+        data = pickle.load(file)
+
+    hallu_data, truth_data = [], []
+    for entry in data:
+        if entry['label'] == 0:
+            hallu_data.append(entry['hidden_states'])
+        else:
+            truth_data.append(entry['hidden_states'])
+    
+    if not hallu_data:
+        raise ValueError("No hallucination data found.")
+    if not truth_data:
+        raise ValueError("No truth data found.")
+
+    hallu_data = torch.stack(hallu_data).float()
+    truth_data = torch.stack(truth_data).float()
+
+    if hallu_data.size(0) != truth_data.size(0):
+        raise ValueError("Positive and negative data sizes do not match.")
+    
+    hallu_hidden_states = hallu_data.permute(1, 0, 2)[args.lowest_layer:args.highest_layer].to(device)
+    truth_hidden_states = truth_data.permute(1, 0, 2)[args.lowest_layer:args.highest_layer].to(device)
+
+    return hallu_hidden_states, truth_hidden_states
+
 
 def get_model_answer_chair(args, data, model, answer_file, hallu_vectors, truth_vectors):
-    
+    device = next(model.model.parameters()).device
+    hallu_hidden_states, truth_hidden_states = load_embedding_data(args, device)
+
     with open(answer_file, 'w') as ans_file:
         for ins in tqdm(data):
             image_id = ins['image_id']
             image_path = ins['image_path']
             prompt = ins['question']
-            
-            edited_model = dynamic_edit(args, model, hallu_vectors, truth_vectors)
+            hidden_states = get_hidden_states(args, model, image_path, prompt, device)
+
+            rank_hallu, rank_truth = calculate_rank(args, hidden_states, hallu_hidden_states, truth_hidden_states)
+            edited_model = dynamic_edit(args, model, hallu_vectors, truth_vectors, rank_hallu, rank_truth)
 
             response = edited_model.chat(image_path, prompt)
 
@@ -53,8 +88,31 @@ def get_model_answer_chair(args, data, model, answer_file, hallu_vectors, truth_
             }
 
             ans_file.write(json.dumps(out) + "\n")
-            raise AttributeError("The edited model does not have a 'chat' function.")
     print(f'----CHAIR----\nSaved responses to {answer_file}')
+
+
+def calculate_rank(args, hidden_states, hallu_hidden_states, truth_hidden_states):
+    rank_hallu = []
+    rank_truth = []
+    for layer in range(args.highest_layer - args.lowest_layer):
+        hallu_state = hallu_hidden_states[layer]
+        truth_state = truth_hidden_states[layer]
+        hidden_state = hidden_states[layer]
+        similarity_hallu = F.cosine_similarity(hidden_state, hallu_state, dim=1)
+        similarity_truth = F.cosine_similarity(hidden_state, truth_state, dim=1)
+
+        mean_similarity_hallu = similarity_hallu.mean().item()
+        mean_similarity_truth = similarity_truth.mean().item()
+
+        rank_hallu.append(round(mean_similarity_hallu * 100))
+        rank_truth.append(round(mean_similarity_truth * 100))
+    return rank_hallu, rank_truth
+
+
+def get_hidden_states(args, model, image_path, prompt, device):
+    outputs = model._basic_forward(False, image_path, prompt, None, return_dict=True)###########
+    hidden_states = torch.stack(outputs.hidden_states)[1:, 0]   # [32, seq_len, 4096]
+    return hidden_states[args.lowest_layer:args.highest_layer, -1].to(device)
 
 
 def get_model_answer_pope(args, data, model, answer_file, hallu_vectors, truth_vectors):
@@ -67,7 +125,7 @@ def get_model_answer_pope(args, data, model, answer_file, hallu_vectors, truth_v
         label_list, pred_list = [], []
         with open(chat_save_file, 'w') as ans_file:
             for ins in tqdm(sub_data):
-
+                
                 edited_model = dynamic_edit(args, model, hallu_vectors, truth_vectors)
 
                 response = edited_model.chat(ins['image_path'], ins['question']).strip()
@@ -136,6 +194,7 @@ if __name__ == "__main__":
     parser.add_argument("--model_path", default="/workspace/Nullu/output/edited_model/MiniGPT4-top4-16-32-test") 
     parser.add_argument("--dataset", choices=['chair', 'pope'], default="pope")
     parser.add_argument("--split", default="val")
+    parser.add_argument("--emb_path", type=str, default=None) 
 
     parser.add_argument("--num_samples", type=int, default=1)
     parser.add_argument("--sampling", choices=['first', 'random'], default='random')

@@ -120,7 +120,7 @@ class DynamicEdit():
                         hallu_filter = torch.eye(self.D)
                     else:
                         hallu_matrix = torch.zeros(self.D, self.D)
-                        for rank in range(len(hallu_vectors[layer_num])):
+                        for rank in range(self.top_k_ranks[layer_num-self.edit_layer_range[0]]):
                             hallu_vec = hallu_vectors[layer_num][rank]
                             hallu_matrix += hallu_vec @ hallu_vec.T
                         hallu_filter = torch.eye(self.D) - hallu_matrix
@@ -129,13 +129,13 @@ class DynamicEdit():
                         truth_filter = torch.eye(self.D)
                     else:
                         truth_matrix = torch.zeros(self.D, self.D)
-                        for rank in range(len(truth_vectors[layer_num])):
+                        for rank in range(self.top_k_ranks_truth[layer_num-self.edit_layer_range[0]]):
                             truth_vec = truth_vectors[layer_num][rank]
                             truth_matrix += truth_vec @ truth_vec.T
                         truth_filter = truth_matrix
-                    if layer_num == 31:
-                        print(f"hallu_filter:{hallu_filter}")
-                        print(f"truth_filter:{truth_filter}")
+                    # if layer_num == 31:
+                    #     print(f"hallu_filter:{hallu_filter}")
+                    #     print(f"truth_filter:{truth_filter}")
                     P_filter_left = hallu_filter @ truth_filter
                     P_filter_right = truth_filter @ hallu_filter
                     if self.model.args.model_name == 'MiniGPT4':
