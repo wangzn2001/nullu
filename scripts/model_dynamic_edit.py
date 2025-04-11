@@ -64,9 +64,50 @@ def load_embedding_data(args, device):
     return hallu_hidden_states, truth_hidden_states
 
 
+def get_k_exceeding_threshold(row_tensor, threshold):
+    abs_row = row_tensor.abs()
+    cumsum = abs_row.cumsum(dim=-1)
+    
+    # 找到第一个位置 k，使得和大于 threshold
+    exceed_indices = (cumsum > threshold).nonzero(as_tuple=False)
+    if exceed_indices.numel() == 0:
+        return 100  # 如果都没超过，返回最大长度
+    else:
+        return exceed_indices[0].item() + 1  # 加1表示前k个数（包含这个）
+    
+
+def calculate_rank(args, hidden_states, hallu_hidden_states, truth_hidden_states):
+    rank_hallu = []
+    rank_truth = []
+
+    for layer in range(args.highest_layer - args.lowest_layer):
+        hallu_state = hallu_hidden_states[layer+int(args.lowest_layer)]
+        truth_state = truth_hidden_states[layer+int(args.lowest_layer)]
+        hidden_state = hidden_states[layer]
+        similarity_hallu = F.cosine_similarity(hidden_state, torch.squeeze(hallu_state), dim=1)
+        similarity_truth = F.cosine_similarity(hidden_state, torch.squeeze(truth_state), dim=1)
+
+        k_hallu = get_k_exceeding_threshold(similarity_hallu, threshold=0.8)
+        k_truth = get_k_exceeding_threshold(similarity_truth, threshold=3.0)
+        
+        rank_hallu.append(k_hallu)
+        rank_truth.append(k_truth)
+
+    return rank_hallu, rank_truth
+
+
+def get_hidden_states(args, model, image_path, prompt, device):
+    if args.model_name == 'MiniGPT4':
+        outputs = model._basic_forward(image_path, prompt, None, return_dict=True)
+    else:
+        outputs = model._basic_forward(False, image_path, prompt, None, return_dict=True)#LLava
+    hidden_states = torch.stack(outputs.hidden_states)[1:, 0]   # [32, seq_len, 4096]
+    return hidden_states[args.lowest_layer:args.highest_layer, -1].cpu()
+
+
 def get_model_answer_chair(args, data, model, answer_file, hallu_vectors, truth_vectors):
     device = next(model.model.parameters()).device
-    hallu_hidden_states, truth_hidden_states = load_embedding_data(args, device)
+    # hallu_hidden_states, truth_hidden_states = load_embedding_data(args, device)
 
     with open(answer_file, 'w') as ans_file:
         for ins in tqdm(data):
@@ -75,7 +116,7 @@ def get_model_answer_chair(args, data, model, answer_file, hallu_vectors, truth_
             prompt = ins['question']
             hidden_states = get_hidden_states(args, model, image_path, prompt, device)
 
-            rank_hallu, rank_truth = calculate_rank(args, hidden_states, hallu_hidden_states, truth_hidden_states)
+            rank_hallu, rank_truth = calculate_rank(args, hidden_states, hallu_vectors, truth_vectors)
             edited_model = dynamic_edit(args, model, hallu_vectors, truth_vectors, rank_hallu, rank_truth)
 
             response = edited_model.chat(image_path, prompt)
@@ -85,54 +126,44 @@ def get_model_answer_chair(args, data, model, answer_file, hallu_vectors, truth_
                 "model_name": args.model_name,
                 "question": prompt,
                 "caption": response,
+                "rank_hallu": rank_hallu,
+                "rank_truth": rank_truth
             }
-
             ans_file.write(json.dumps(out) + "\n")
     print(f'----CHAIR----\nSaved responses to {answer_file}')
 
 
-def calculate_rank(args, hidden_states, hallu_hidden_states, truth_hidden_states):
-    rank_hallu = []
-    rank_truth = []
-    for layer in range(args.highest_layer - args.lowest_layer):
-        hallu_state = hallu_hidden_states[layer]
-        truth_state = truth_hidden_states[layer]
-        hidden_state = hidden_states[layer]
-        similarity_hallu = F.cosine_similarity(hidden_state, hallu_state, dim=1)
-        similarity_truth = F.cosine_similarity(hidden_state, truth_state, dim=1)
-
-        mean_similarity_hallu = similarity_hallu.mean().item()
-        mean_similarity_truth = similarity_truth.mean().item()
-
-        rank_hallu.append(round(mean_similarity_hallu * 100))
-        rank_truth.append(round(mean_similarity_truth * 100))
-    return rank_hallu, rank_truth
-
-
-def get_hidden_states(args, model, image_path, prompt, device):
-    outputs = model._basic_forward(False, image_path, prompt, None, return_dict=True)###########
-    hidden_states = torch.stack(outputs.hidden_states)[1:, 0]   # [32, seq_len, 4096]
-    return hidden_states[args.lowest_layer:args.highest_layer, -1].to(device)
-
-
 def get_model_answer_pope(args, data, model, answer_file, hallu_vectors, truth_vectors):
-
+    device = next(model.model.parameters()).device
+    # hallu_hidden_states, truth_hidden_states = load_embedding_data(args, device)
     for strategy, sub_data in data.items():
-
-        chat_save_file = answer_file.replace('_chat.jsonl', f'_{strategy}_chat.jsonl')
-        result_save_file = answer_file.replace('_chat.jsonl', f'_{strategy}_result.json')
+        # if strategy != 'random':
+        #     continue
+        # if strategy != 'popular':
+        #     continue
+        # if strategy == 'adversarial':
+        #     continue
+        chat_save_file = answer_file.replace('_chat.jsonl', f'_{strategy}_chat_vec_0.8_3.0.jsonl')
+        result_save_file = answer_file.replace('_chat.jsonl', f'_{strategy}_result_vec_0.8_3.0.json')
         
         label_list, pred_list = [], []
         with open(chat_save_file, 'w') as ans_file:
             for ins in tqdm(sub_data):
-                
-                edited_model = dynamic_edit(args, model, hallu_vectors, truth_vectors)
+                image_path = ins['image_path']
+                prompt = ins['question']
+
+                hidden_states = get_hidden_states(args, model, image_path, prompt, device)
+                rank_hallu, rank_truth = calculate_rank(args, hidden_states, hallu_vectors, truth_vectors)
+
+                edited_model = dynamic_edit(args, model, hallu_vectors, truth_vectors, rank_hallu, rank_truth)
 
                 response = edited_model.chat(ins['image_path'], ins['question']).strip()
 
                 ins['image_path'] = os.path.basename(ins['image_path'])
                 ins['response'] = response
                 ins['answer'] = 'no' if any(kw in response.lower() for kw in ["no", "not", "false", f"n't"]) else 'yes'
+                ins['rank_hallu'] = rank_hallu
+                ins['rank_truth'] = rank_truth
 
                 ans_file.write(json.dumps(ins) + '\n')
 
@@ -154,12 +185,12 @@ def main(args):
     model = build_model(args)
     
     data = build_dataset(args.dataset, args.split, args.sampling, args.num_samples)
-
     hallu_path = os.path.join(args.tensors_path, 'hallu_vectors.pth')
     truth_path = os.path.join(args.tensors_path, 'truth_vectors.pth')
     hallu_vectors = torch.load(hallu_path)
     truth_vectors = torch.load(truth_path)
-    
+    hallu_vectors = {k: v.cpu() for k, v in hallu_vectors.items()}
+    truth_vectors = {k: v.cpu() for k, v in truth_vectors.items()}
     
 
     save_dir = f"./eval/{args.dataset}/{args.tensors_path.split('/')[-1]}/"
@@ -176,7 +207,7 @@ def main(args):
     )
 
     if args.dataset == "chair":
-        get_model_answer_chair(args, data, model, save_file, hallu_vectors, truth_vectors)
+        # get_model_answer_chair(args, data, model, save_file, hallu_vectors, truth_vectors)
 
         from calculate_chair import chair_calculation
         chair_calculation(save_file)

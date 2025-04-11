@@ -6,7 +6,7 @@ def pope_calculation(response_dir):
     files = [
         os.path.join(response_dir, f)
         for f in os.listdir(response_dir)
-        if f.endswith("_chat.jsonl")
+        if f.endswith("_chat_vec.jsonl")
     ]
     for file in files:
         pred_list = [json.loads(q)['answer'] for q in open(file, 'r')]

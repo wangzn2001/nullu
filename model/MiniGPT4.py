@@ -110,7 +110,7 @@ class MiniGPT4(LargeMultimodalModel):
             outputs = self.model.llama_model(
                 inputs_embeds=embs,
                 return_dict=True,
-                output_attentions=True,
+                output_attentions=False,
                 output_hidden_states=True,
             )
 

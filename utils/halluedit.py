@@ -391,4 +391,5 @@ class HalluEdit():
         # print(f"Elapsed time: {end_time - start_time} seconds")
         # print(f"System Memory Used: {(after_memory - before_memory) / (1024 * 1024)} MB")
         # print(f"GPU Memory Used: {(after_gpu_memory_used - before_gpu_memory_used) / (1024 ** 2)} MB")
+        return edited_model
     

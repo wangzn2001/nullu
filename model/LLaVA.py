@@ -120,7 +120,7 @@ class LLaVA(LargeMultimodalModel):
             input_ids,
             images=image_tensor, 
             return_dict=return_dict,
-            output_attentions=return_dict,
+            # output_attentions=return_dict,
             output_hidden_states=return_dict)
         
         # if return_dict:
@@ -169,7 +169,7 @@ class LLaVA(LargeMultimodalModel):
             stopping_criteria=[stopping_criteria],
             return_dict_in_generate=return_dict,
             output_attentions=return_dict,
-            output_hidden_states=return_dict,
+            # output_hidden_states=return_dict,
             output_scores=return_dict,
             )
 
