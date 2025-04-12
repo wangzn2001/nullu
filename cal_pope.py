@@ -20,6 +20,6 @@ def compute_f1_score(jsonl_path):
     print(f"True Negatives (TN): {tn}")
 
 # 替换为你的文件路径
-jsonl_file_path = "eval/pope/LLaVA-7B-top4-top4truth-16-32--16truth-32truth---last/val_random500_beam3_num128_42_random_chat.jsonl"
+jsonl_file_path = "eval/pope/llava-v1.5-7b/val_random500_beam1_num128_42_random_chat.jsonl"
 
 compute_f1_score(jsonl_file_path)

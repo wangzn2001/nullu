@@ -91,14 +91,12 @@ class LLaVA(LargeMultimodalModel):
         self.roles = self.conv.roles
     
     @torch.no_grad()
-    def _basic_forward(self, noise_flag, image_path, prompt, answer=None, return_dict=False):
+    def _basic_forward(self, image_path, prompt, answer=None, return_dict=False):
         self.refresh_chat()
         image = cv2.imread(image_path) 
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB) 
         image_tensor = self.image_processor.preprocess(image, return_tensors='pt')['pixel_values']
         image_tensor = image_tensor.unsqueeze(0).half().to(self.device)
-        if noise_flag:
-            image_tensor = add_diffusion_noise(image_tensor, 500)
 
         # image_tensor = None ############
         # inp = prompt ###############
@@ -194,9 +192,9 @@ class LLaVA(LargeMultimodalModel):
         for hook in self.hooks:
             hook.remove()
 
-    def get_activations(self, image_path, prompt, answer=None, noise_flag=False):##########
+    def get_activations(self, image_path, prompt, answer=None):##########
         self.register_hooks()
-        outputs = self._basic_forward(noise_flag, image_path, prompt, answer, return_dict=True)###########
+        outputs = self._basic_forward(image_path, prompt, answer, return_dict=True)###########
         attn_heads = torch.cat(self.model.attn_heads).reshape(32, -1, 32, 128)   # [32, seq_len, 4096] -> [32, seq_len, 32, 128]
         attn_residual = torch.cat(self.model.attn_residual)   # [32, seq_len, 4096]
         mlp_residual = torch.stack(self.model.mlp_residual)   # [32, seq_len, 4096]

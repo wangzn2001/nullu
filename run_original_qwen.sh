@@ -1,3 +1,3 @@
 # CUDA_VISIBLE_DEVICES=0 /home/wangzn/anaconda3/envs/nullu/bin/python scripts/model_run.py --model_name Qwen_VL_Chat --model_path qwen_vl_chat
 CUDA_VISIBLE_DEVICES=6 /home/wangzn/anaconda3/envs/nullu/bin/python scripts/model_response.py --model_name Qwen_VL_Chat --model_path qwen_vl_chat --dataset chair --num_samples 500 --num_beams 1 --max_length 128 --seed 42
-CUDA_VISIBLE_DEVICES=0 /home/wangzn/anaconda3/envs/nullu/bin/python scripts/model_response.py --model_name Qwen_VL_Chat --model_path qwen_vl_chat --dataset pope --num_samples 500 --num_beams 1 --max_length 128 --seed 42 
+CUDA_VISIBLE_DEVICES=6 /home/wangzn/anaconda3/envs/nullu/bin/python scripts/model_response.py --model_name Qwen_VL_Chat --model_path qwen_vl_chat --dataset pope --num_samples 500 --num_beams 1 --max_length 10 --seed 42 

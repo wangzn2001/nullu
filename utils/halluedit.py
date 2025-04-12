@@ -113,8 +113,8 @@ class HalluEdit():
         non_preferred_sent_embs = self._get_hidden_sentence_embeddings(pos_data) if isinstance(pos_data, list) else pos_data.permute(1, 0, 2)  # (L, N, D)
         preferred_sent_embs = self._get_hidden_sentence_embeddings(neg_data) if isinstance(neg_data, list) else neg_data.permute(1, 0, 2)  # (L, N, D)
 
-        # difference_matrix = (preferred_sent_embs - non_preferred_sent_embs) / 2 # (L, N, D)
-        difference_matrix = non_preferred_sent_embs  # (L, N, D)
+        difference_matrix = (preferred_sent_embs - non_preferred_sent_embs) / 2 # (L, N, D)
+        # difference_matrix = non_preferred_sent_embs  # (L, N, D)
         truth_matrix = preferred_sent_embs
 
         logging.info('Difference matrix calculated.')

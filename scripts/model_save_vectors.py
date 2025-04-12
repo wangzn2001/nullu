@@ -13,7 +13,7 @@ import torch.backends.cudnn as cudnn
 from tqdm import tqdm
 
 from model import build_model
-from utils.halluedit import HalluEdit
+from utils.dynamicedit import DynamicEdit
 
 def setup_seeds(seed=42):
     random.seed(seed)
@@ -80,24 +80,17 @@ def main(args):
 
     output_dir = os.path.join("./output", args.model_name)
     os.makedirs(output_dir, exist_ok=True)
-    
-    # Apply editing
-    if args.lowest_layer == -1 or args.highest_layer == -1:
-        layer_range = None
-    else:
-        layer_range = np.arange(args.lowest_layer, args.highest_layer)
-    
-    editor = HalluEdit(model=model, ebd=args.ebd, centering=args.centering, alpha=args.alpha,
-                       top_k_ranks=args.top_k_ranks, top_k_ranks_truth=args.top_k_ranks_truth, edit_layer_range=layer_range, random_dps=True)
 
-    hallu_vectors, truth_vectors = editor.save_vectors(pos_data, neg_data, 
-                                                edit_keys=args.edit_keys, edit_values=args.edit_values, layer_range=layer_range)
+    
+    editor = DynamicEdit(model=model, top_k_ranks_hallu=args.top_k_ranks_hallu, top_k_ranks_truth=args.top_k_ranks_truth, matrix=args.matrix)
+
+    hallu_vectors, truth_vectors = editor.save_vectors(pos_data, neg_data)
     
     # Save edited model
     save_dir = args.tensors_path
     os.makedirs(save_dir, exist_ok=True)
 
-    save_name = f"{args.model_name}-top{args.top_k_ranks}-top{args.top_k_ranks_truth}truth-{args.lowest_layer}-{args.highest_layer}--{args.ebd}"
+    save_name = f"{args.model_name}-top{args.top_k_ranks_hallu}hallu-top{args.top_k_ranks_truth}truth-{args.ebd}-{args.matrix}"
     save_path = os.path.join(args.tensors_path, save_name)
 
     save_model_and_config(hallu_vectors, truth_vectors, save_path)
@@ -105,25 +98,19 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog='Run a model')
-    # parser.add_argument("--model_name", choices=['LLaVA-7B', 'MiniGPT4', 'mPLUG_Owl2'], default="mPLUG_Owl2") 
-    # parser.add_argument("--model_path", default="/workspace/data1/huggingface/hub/models--MAGAer13--mplug-owl2-llama2-7b/snapshots/200342bbdd0eef019b02b4d7c9b17df235bba4ad")
-    parser.add_argument("--model_name", choices=['LLaVA-7B', 'MiniGPT4', 'mPLUG_Owl2', 'Qwen_VL_Chat'], default="MiniGPT4") 
+
+    parser.add_argument("--model_name", choices=['LLaVA-7B', 'MiniGPT4', 'Qwen_VL_Chat'], default="LLaVA-7B") 
     parser.add_argument("--model_path", default="/workspace/data1/huggingface/hub/models--meta-llama--Llama-2-7b-chat-hf/snapshots/f5db02db724555f92da89c216ac04704f23d4590")
     parser.add_argument(
         "--emb_path", type=str, 
         default="./output/MiniGPT4/lure_train_first20_1_42_activations.pkl"
     ) 
 
-    parser.add_argument("--centering", action="store_true", default=False)
-    parser.add_argument("--alpha", type=float, default=1)
-    parser.add_argument("--ebd", choices=['mean', 'last', 'mlp_residual'], default='mean')
-    parser.add_argument("--edit_keys", action="store_true", default=False)
-    parser.add_argument("--edit_values", action="store_true", default=True)
-
-    parser.add_argument("--top_k_ranks", type=int, default=4) #
+    parser.add_argument("--top_k_ranks_hallu", type=int, default=4) #
     parser.add_argument("--top_k_ranks_truth", type=int, default=4) #
-    parser.add_argument("--lowest_layer", type=int, default=16) # 31-32,16-32,16-24,24-32
-    parser.add_argument("--highest_layer", type=int, default=32) #
+
+    parser.add_argument("--ebd", choices=['mean', 'last', 'mlp_residual'], default='mean')
+    parser.add_argument("--matrix", choices=['hidden_states', 'difference'], default="hidden_states") 
 
     parser.add_argument("--tensors_path", type=str, default="./output/saved_tensors")
 
