@@ -25,13 +25,15 @@ def dynamic_edit(args, model, hallu_vectors, truth_vectors, rank_hallu, rank_tru
 
     editor = DynamicEdit(model=model, top_k_ranks_hallu=rank_hallu, top_k_ranks_truth=rank_truth, edit_layer_range=layer_range)
     
-    edited_model = editor.edit(hallu_vectors, truth_vectors, edit_keys=args.edit_keys, edit_values=args.edit_values)
+    edited_model = editor.edit(hallu_vectors, truth_vectors)
 
     return edited_model
     
 
-def get_k_exceeding_threshold(row_tensor, threshold):
-    if threshold == -1:
+def get_k_exceeding_threshold(row_tensor, threshold, nullu=False):
+    if nullu is True:
+        return 4
+    if threshold < 0.0:
         return 0
     abs_row = row_tensor.abs()
     cumsum = abs_row.cumsum(dim=-1)
@@ -45,8 +47,8 @@ def get_k_exceeding_threshold(row_tensor, threshold):
     
 
 def calculate_rank(args, hidden_states, hallu_hidden_states, truth_hidden_states):
-    rank_hallu = []
-    rank_truth = []
+    rank_hallu = {}
+    rank_truth = {}
 
     for layer in range(args.lowest_layer, args.highest_layer):
         hallu_state = hallu_hidden_states[layer]
@@ -54,19 +56,29 @@ def calculate_rank(args, hidden_states, hallu_hidden_states, truth_hidden_states
         hidden_state = hidden_states[layer]
         similarity_hallu = F.cosine_similarity(hidden_state, torch.squeeze(hallu_state), dim=1)
         similarity_truth = F.cosine_similarity(hidden_state, torch.squeeze(truth_state), dim=1)
-        k_hallu = get_k_exceeding_threshold(similarity_hallu, threshold=args.threshold_hallu)
-        k_truth = get_k_exceeding_threshold(similarity_truth, threshold=args.threshold_truth)
+        if args.original is True:
+            k_hallu = get_k_exceeding_threshold(similarity_hallu, threshold=-1.0)
+            k_truth = get_k_exceeding_threshold(similarity_truth, threshold=-1.0)
+        elif args.nullu is True:
+            k_hallu = get_k_exceeding_threshold(similarity_hallu, threshold=args.threshold_hallu, nullu=True)
+            k_truth = get_k_exceeding_threshold(similarity_truth, threshold=-2.0)
+        else:
+            k_hallu = get_k_exceeding_threshold(similarity_hallu, threshold=args.threshold_hallu)
+            k_truth = get_k_exceeding_threshold(similarity_truth, threshold=args.threshold_truth)
         
-        rank_hallu.append(k_hallu)
-        rank_truth.append(k_truth)
+        rank_hallu[layer] = k_hallu
+        rank_truth[layer] = k_truth
 
     return rank_hallu, rank_truth
 
 
-def get_hidden_states(model, image_path, prompt, device):
+def get_hidden_states(args, model, image_path, prompt, device):
     outputs = model._basic_forward(image_path, prompt, None, return_dict=True)
     hidden_states = torch.stack(outputs.hidden_states)[1:, 0]   # [32, seq_len, 4096]
-    return hidden_states[:, -1].to(device)
+    if args.nullu is True:
+        return hidden_states.mean(1).to(device)
+    else:
+        return hidden_states[:, -1].to(device)
 
 
 def get_model_answer_chair(args, data, model, answer_file, hallu_vectors, truth_vectors, device):
@@ -76,8 +88,7 @@ def get_model_answer_chair(args, data, model, answer_file, hallu_vectors, truth_
             image_id = ins['image_id']
             image_path = ins['image_path']
             prompt = ins['question']
-
-            hidden_states = get_hidden_states(model, image_path, prompt, device)
+            hidden_states = get_hidden_states(args, model, image_path, prompt, device)
             rank_hallu, rank_truth = calculate_rank(args, hidden_states, hallu_vectors, truth_vectors)
 
             edited_model = dynamic_edit(args, model, hallu_vectors, truth_vectors, rank_hallu, rank_truth)
@@ -106,7 +117,7 @@ def get_model_answer_pope(args, data, model, answer_file, hallu_vectors, truth_v
                 image_path = ins['image_path']
                 prompt = ins['question']
 
-                hidden_states = get_hidden_states(model, image_path, prompt, device)
+                hidden_states = get_hidden_states(args, model, image_path, prompt, device)
                 rank_hallu, rank_truth = calculate_rank(args, hidden_states, hallu_vectors, truth_vectors)
 
                 edited_model = dynamic_edit(args, model, hallu_vectors, truth_vectors, rank_hallu, rank_truth)
@@ -148,8 +159,11 @@ def main(args):
     hallu_vectors = {k: v.to(device) for k, v in hallu_vectors.items()}
     truth_vectors = {k: v.to(device) for k, v in truth_vectors.items()}
     
-
-    save_dir = f"./eval/{args.dataset}/{args.tensors_path.split('/')[-1]}/"
+    if args.original is True:
+        save_dir = f"./eval/{args.dataset}/{args.model_name}/"
+    else:
+        save_dir = f"./eval/{args.dataset}/{args.tensors_path.split('/')[-1]}--layer{args.lowest_layer}_{args.highest_layer}/"
+    
     os.makedirs(save_dir, exist_ok=True)
 
     model_tag = f"_beam{args.num_beams}_token{args.max_length}"
@@ -159,9 +173,9 @@ def main(args):
         save_dir,
         f"{args.split}{sampling_tag}{model_tag}_seed{args.seed}_chat.jsonl"
     )
-
+    
     if args.dataset == "chair":
-        get_model_answer_chair(args, data, model, save_file, hallu_vectors, truth_vectors)
+        get_model_answer_chair(args, data, model, save_file, hallu_vectors, truth_vectors, device)
 
         from calculate_chair import chair_calculation
         chair_calculation(save_file)
@@ -190,12 +204,14 @@ if __name__ == "__main__":
 
     parser.add_argument("--seed", type=int, default=114514)
 
-    parser.add_argument("--threshold_hallu", type=int, default=4) #
-    parser.add_argument("--threshold_truth", type=int, default=4) #
+    parser.add_argument("--threshold_hallu", type=float, default=4) #
+    parser.add_argument("--threshold_truth", type=float, default=4) #
 
     parser.add_argument("--lowest_layer", type=int, default=16) # 31-32,16-32,16-24,24-32
     parser.add_argument("--highest_layer", type=int, default=32) #
     
+    parser.add_argument("--original", type=bool, default=False) #
+    parser.add_argument("--nullu", type=bool, default=False) #
     # MME
     # parser.add_argument("--reference_dir", default="/data/MME_Benchmark_release_version/eval_tool/Your_Results")
     # parser.add_argument("--base_dir", default="/workspace/MME")

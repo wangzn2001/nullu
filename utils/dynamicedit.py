@@ -14,7 +14,7 @@ import types
 logging.getLogger().setLevel(logging.INFO)
 
 class DynamicEdit():
-    def __init__(self, model, top_k_ranks_hallu=None, top_k_ranks_truth=None, edit_layer_range=None, matrix='hidden_states'):
+    def __init__(self, model, top_k_ranks_hallu=None, top_k_ranks_truth=None, edit_layer_range=None, matrix=None):
 
         self.model = model
         self.model.model.eval()
@@ -50,7 +50,6 @@ class DynamicEdit():
         self.truth_vectors = None
         self.edit_layer_range = edit_layer_range
 
-        self.f = open(f'logit_lens_test_{model.args.model_name}.txt', 'w')
 
     def filter_key(self):
         key_dict = []
@@ -86,9 +85,10 @@ class DynamicEdit():
     def _get_difference_matrix(self, pos_data, neg_data):
         non_preferred_sent_embs = pos_data.permute(1, 0, 2)  # (L, N, D)
         preferred_sent_embs = neg_data.permute(1, 0, 2)  # (L, N, D)
-
-        # difference_matrix = (preferred_sent_embs - non_preferred_sent_embs) / 2 # (L, N, D)
-        hallu_matrix = non_preferred_sent_embs  # (L, N, D)
+        if self.matrix == 'difference':
+            hallu_matrix = (preferred_sent_embs - non_preferred_sent_embs) / 2 # (L, N, D)
+        elif self.matrix == 'hidden_states':
+            hallu_matrix = non_preferred_sent_embs  # (L, N, D)
         truth_matrix = preferred_sent_embs
 
         logging.info('Matrix calculated.')
@@ -139,7 +139,6 @@ class DynamicEdit():
             hallu_vec = []
             if self.top_k_ranks_hallu == 0:
                 hallu_vec.append(torch.zeros(self.D))
-                self.f.write('top_k_ranks_hallu is zero !!!')
                 logging.info('top_k_ranks_hallu is zero !!!')
             else:
                 hallu_rank_list = np.arange(self.top_k_ranks_hallu)  # [0, 1] by default
@@ -159,7 +158,6 @@ class DynamicEdit():
             truth_vec = []
             if self.top_k_ranks_truth == 0:
                 truth_vec.append(torch.zeros(self.D))
-                self.f.write('top_k_ranks_truth is zero !!!')
                 logging.info('top_k_ranks_truth is zero !!!')
             else:    
                 truth_rank_list = np.arange(self.top_k_ranks_truth)  # [0, 1] by default
@@ -190,8 +188,7 @@ class DynamicEdit():
             for key in self.key_dict:
                 layer_num = int(key.split('.')[self.lm_sep_idx])
                 if layer_num in self.edit_layer_range:
-
-                    if self.top_k_ranks_hallu == 0:
+                    if self.top_k_ranks_hallu[layer_num] == 0:
                         hallu_filter = torch.eye(self.D).to(self.device)
                     else:
                         hallu_matrix = torch.zeros(self.D, self.D).to(self.device)
@@ -200,11 +197,11 @@ class DynamicEdit():
                             hallu_matrix += hallu_vec @ hallu_vec.T
                         hallu_filter = torch.eye(self.D).to(self.device) - hallu_matrix
 
-                    if self.top_k_ranks_truth == 0:
+                    if self.top_k_ranks_truth[layer_num] == 0:
                         truth_filter = torch.eye(self.D).to(self.device)
                     else:
                         truth_matrix = torch.zeros(self.D, self.D).to(self.device)
-                        for rank in range(self.top_k_ranks_truth[layer_num-self.edit_layer_range[0]]):
+                        for rank in range(self.top_k_ranks_truth[layer_num]):
                             truth_vec = truth_vectors[layer_num][rank].to(self.device)
                             truth_matrix += truth_vec @ truth_vec.T
                         truth_filter = truth_matrix

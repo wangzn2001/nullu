@@ -1,2 +1,0 @@
-CUDA_VISIBLE_DEVICES=1 /home/wangzn/anaconda3/envs/nullu/bin/python scripts/model_edit.py --model_name LLaVA-7B --model_path llava/llava-v1.5-7b --emb_path output/LLaVA-7B/lure_train_42_activations.pkl --top_k_ranks 4 --top_k_ranks_truth 0 --lowest_layer 16 --highest_layer 32 --ebd mean
-CUDA_VISIBLE_DEVICES=1 /home/wangzn/anaconda3/envs/nullu/bin/python scripts/model_response.py --model_name LLaVA-7B --model_path output/edited_model/LLaVA-7B-top4-top0truth-16-32--31truth-32truth---mean --dataset pope --num_samples 500 --num_beams 3 --max_length 128 --seed 42

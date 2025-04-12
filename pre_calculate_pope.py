@@ -12,14 +12,16 @@ def compute_marco(tp, fp, tn, fn):
     f1_neg = compute_f1(tn, fn, fp)
     return (f1_pos + f1_neg) /2
 
-strategy = "random"
+strategy = "popular"
 model = "LLaVA-7B"
 original_model = {
     "LLaVA-7B": 'llava-v1.5-7b',
     "MiniGPT4": 'Llama-2-7b-chat-hf'
 }
+threshold_hallu = 0.8
+threshold_truth = 3.0
 n = 0
-with open(f"eval/pope/{model}-top100-top100truth-30-32--last__dif/val_random500_beam3_num10_42_{strategy}_chat_vec_0.3_2.0.jsonl", "r") as f:
+with open(f"eval/pope/{model}-top100-top100truth-30-32--last/val_random500_beam3_num10_42_{strategy}_chat_vec_{threshold_hallu}_{threshold_truth}.jsonl", "r") as f:
 
     TN = 0
     TP = 0
@@ -57,7 +59,7 @@ with open(f"eval/pope/{model}-top100-top100truth-30-32--last__dif/val_random500_
     print(f1)
     print(ba)
 
-with open(f"eval/pope/{model}-top100-top100truth-30-32--last/val_random500_beam3_num10_42_{strategy}_chat_vec_0.3_1.0.jsonl", "r") as f:
+with open(f"eval/pope/{model}-top100-top100truth-30-32--last/val_random500_beam3_num10_42_{strategy}_chat_vec_0.8_2.0.jsonl", "r") as f:
     cnt = 0
     TN = 0
     TP = 0
@@ -135,8 +137,3 @@ with open(f"eval/pope/{original_model[model]}/val_random500_beam1_num10_42_{stra
     print(FN)
     print(f1)
     print(ba)
-
-
-# 示例打印结果
-# for r in results:
-#     print(r)
