@@ -12,7 +12,7 @@ def compute_marco(tp, fp, tn, fn):
     f1_neg = compute_f1(tn, fn, fp)
     return (f1_pos + f1_neg) /2
 
-strategy = "popular"
+strategy = "random"
 model = "LLaVA-7B"
 original_model = {
     "LLaVA-7B": 'llava-v1.5-7b',
@@ -21,7 +21,7 @@ original_model = {
 threshold_hallu = 0.8
 threshold_truth = 3.0
 n = 0
-with open(f"eval/pope/{model}-top100-top100truth-30-32--last/val_random500_beam3_num10_42_{strategy}_chat_vec_{threshold_hallu}_{threshold_truth}.jsonl", "r") as f:
+with open(f"eval/pope/LLaVA-7B-top100hallu-top100truth-mean-difference--layer16_32/val_random500_beam3_token10_seed42_random_0.8_-0.5_chat.jsonl", "r") as f:
 
     TN = 0
     TP = 0
@@ -59,7 +59,7 @@ with open(f"eval/pope/{model}-top100-top100truth-30-32--last/val_random500_beam3
     print(f1)
     print(ba)
 
-with open(f"eval/pope/{model}-top100-top100truth-30-32--last/val_random500_beam3_num10_42_{strategy}_chat_vec_0.8_2.0.jsonl", "r") as f:
+with open(f"eval/pope/LLaVA-7B-top100hallu-top100truth-last-hidden_states--layer30_32/val_random500_beam3_token10_seed42_random_0.8_2.0_chat.jsonl", "r") as f:
     cnt = 0
     TN = 0
     TP = 0

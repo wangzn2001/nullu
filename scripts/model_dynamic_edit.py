@@ -38,12 +38,11 @@ def get_k_exceeding_threshold(row_tensor, threshold, nullu=False):
     abs_row = row_tensor.abs()
     cumsum = abs_row.cumsum(dim=-1)
     
-    # 找到第一个位置 k，使得和大于 threshold
     exceed_indices = (cumsum > threshold).nonzero(as_tuple=False)
     if exceed_indices.numel() == 0:
-        return row_tensor.size(-1)  # 如果都没超过，返回最大长度
+        return row_tensor.size(-1) 
     else:
-        return exceed_indices[0].item() + 1  # 加1表示前k个数（包含这个）
+        return exceed_indices[0].item() + 1 
     
 
 def calculate_rank(args, hidden_states, hallu_hidden_states, truth_hidden_states):
@@ -75,7 +74,7 @@ def calculate_rank(args, hidden_states, hallu_hidden_states, truth_hidden_states
 def get_hidden_states(args, model, image_path, prompt, device):
     outputs = model._basic_forward(image_path, prompt, None, return_dict=True)
     hidden_states = torch.stack(outputs.hidden_states)[1:, 0]   # [32, seq_len, 4096]
-    if args.nullu is True:
+    if args.nullu is True or args.ebd == 'mean':
         return hidden_states.mean(1).to(device)
     else:
         return hidden_states[:, -1].to(device)
@@ -212,6 +211,8 @@ if __name__ == "__main__":
     
     parser.add_argument("--original", type=bool, default=False) #
     parser.add_argument("--nullu", type=bool, default=False) #
+    parser.add_argument("--ebd", choices=['mean', 'last'], default='last') #
+    
     # MME
     # parser.add_argument("--reference_dir", default="/data/MME_Benchmark_release_version/eval_tool/Your_Results")
     # parser.add_argument("--base_dir", default="/workspace/MME")
