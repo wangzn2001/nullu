@@ -30,19 +30,30 @@ def dynamic_edit(args, model, hallu_vectors, truth_vectors, rank_hallu, rank_tru
     return edited_model
     
 
-def get_k_exceeding_threshold(row_tensor, threshold, nullu=False):
+def get_indices_exceeding_threshold(args, row_tensor, threshold, nullu=False):
     if nullu is True:
-        return 4
+        return [0, 1, 2, 3]  # 对应返回长度为4的下标
+    
     if threshold < 0.0:
-        return 0
+        return [-1]
+    
     abs_row = row_tensor.abs()
-    cumsum = abs_row.cumsum(dim=-1)
+    mask = abs_row > args.abs  # 条件1：每一项必须大于0.05
+    filtered_row = abs_row * mask  # 把不符合条件的设为0
+
+    cumsum = filtered_row.cumsum(dim=-1)
     
     exceed_indices = (cumsum > threshold).nonzero(as_tuple=False)
     if exceed_indices.numel() == 0:
-        return row_tensor.size(-1) 
+        # 全部加起来也不超过，就返回所有符合大于0.05的下标
+        indices = mask.nonzero(as_tuple=True)[0].tolist()
+        if len(indices) == 0:
+            indices = [-1]
+        return indices
     else:
-        return exceed_indices[0].item() + 1 
+        k = exceed_indices[0].item() + 1  # 前k个位置（包含第k个）
+        indices = (mask[:k]).nonzero(as_tuple=True)[0].tolist()
+        return indices
     
 
 def calculate_rank(args, hidden_states, hallu_hidden_states, truth_hidden_states):
@@ -56,14 +67,14 @@ def calculate_rank(args, hidden_states, hallu_hidden_states, truth_hidden_states
         similarity_hallu = F.cosine_similarity(hidden_state, torch.squeeze(hallu_state), dim=1)
         similarity_truth = F.cosine_similarity(hidden_state, torch.squeeze(truth_state), dim=1)
         if args.original is True:
-            k_hallu = get_k_exceeding_threshold(similarity_hallu, threshold=-1.0)
-            k_truth = get_k_exceeding_threshold(similarity_truth, threshold=-1.0)
+            k_hallu = get_indices_exceeding_threshold(args, similarity_hallu, threshold=-1.0)
+            k_truth = get_indices_exceeding_threshold(args, similarity_truth, threshold=-1.0)
         elif args.nullu is True:
-            k_hallu = get_k_exceeding_threshold(similarity_hallu, threshold=args.threshold_hallu, nullu=True)
-            k_truth = get_k_exceeding_threshold(similarity_truth, threshold=-2.0)
+            k_hallu = get_indices_exceeding_threshold(args, similarity_hallu, threshold=args.threshold_hallu, nullu=True)
+            k_truth = get_indices_exceeding_threshold(args, similarity_truth, threshold=-2.0)
         else:
-            k_hallu = get_k_exceeding_threshold(similarity_hallu, threshold=args.threshold_hallu)
-            k_truth = get_k_exceeding_threshold(similarity_truth, threshold=args.threshold_truth)
+            k_hallu = get_indices_exceeding_threshold(args, similarity_hallu, threshold=args.threshold_hallu)
+            k_truth = get_indices_exceeding_threshold(args, similarity_truth, threshold=args.threshold_truth)
         
         rank_hallu[layer] = k_hallu
         rank_truth[layer] = k_truth
@@ -170,7 +181,7 @@ def main(args):
 
     save_file = os.path.join(
         save_dir,
-        f"{args.split}{sampling_tag}{model_tag}_seed{args.seed}_chat.jsonl"
+        f"{args.split}{sampling_tag}{model_tag}_seed{args.seed}_abs{args.abs}_chat.jsonl"
     )
     
     if args.dataset == "chair":
@@ -212,6 +223,7 @@ if __name__ == "__main__":
     parser.add_argument("--original", type=bool, default=False) #
     parser.add_argument("--nullu", type=bool, default=False) #
     parser.add_argument("--ebd", choices=['mean', 'last'], default='last') #
+    parser.add_argument("--abs", type=float, default=0.00)
     
     # MME
     # parser.add_argument("--reference_dir", default="/data/MME_Benchmark_release_version/eval_tool/Your_Results")

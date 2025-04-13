@@ -188,20 +188,20 @@ class DynamicEdit():
             for key in self.key_dict:
                 layer_num = int(key.split('.')[self.lm_sep_idx])
                 if layer_num in self.edit_layer_range:
-                    if self.top_k_ranks_hallu[layer_num] == 0:
+                    if self.top_k_ranks_hallu[layer_num][0] == -1:
                         hallu_filter = torch.eye(self.D).to(self.device)
                     else:
                         hallu_matrix = torch.zeros(self.D, self.D).to(self.device)
-                        for rank in range(self.top_k_ranks_hallu[layer_num]):
+                        for rank in self.top_k_ranks_hallu[layer_num]:
                             hallu_vec = hallu_vectors[layer_num][rank].to(self.device)
                             hallu_matrix += hallu_vec @ hallu_vec.T
                         hallu_filter = torch.eye(self.D).to(self.device) - hallu_matrix
 
-                    if self.top_k_ranks_truth[layer_num] == 0:
+                    if self.top_k_ranks_truth[layer_num][0] == -1:
                         truth_filter = torch.eye(self.D).to(self.device)
                     else:
                         truth_matrix = torch.zeros(self.D, self.D).to(self.device)
-                        for rank in range(self.top_k_ranks_truth[layer_num]):
+                        for rank in self.top_k_ranks_truth[layer_num]:
                             truth_vec = truth_vectors[layer_num][rank].to(self.device)
                             truth_matrix += truth_vec @ truth_vec.T
                         truth_filter = truth_matrix
